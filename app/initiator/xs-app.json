@@ -15,6 +15,20 @@
       "destination": "ui5"
     },
     {
+      "source": "/odata/v4/material/(.*)$",
+      "target": "/odata/v4/material/$1",
+      "destination": "SalesPricing-SRV",
+      "csrfProtection": false,
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/sap/(.*)$",
+      "target": "/sap/$1",
+      "destination": "DIM",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
       "source": "^(.*)$",
       "target": "$1",
       "service": "html5-apps-repo-rt",

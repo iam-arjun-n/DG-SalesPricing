@@ -15,6 +15,24 @@
       "version": "1.20.0",
       "toolsId": "83b2e41e-c561-48e5-b0c1-cd003e56da27"
     },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/API_SLSPRICINGCONDITIONRECORD_SRV/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "2.0",
+          "localUri": "localService/metadata.xml"
+        }
+      },
+      "SAPService": {
+        "uri": "/sap/opu/odata/sap/ZMDG_SLSPRICINGCONDITIONRECORD_SRV/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0"
+        }
+      }
+    },
     "crossNavigation": {
       "inbounds": {
         "DG_SalePricing-Display": {
@@ -65,6 +83,22 @@
         "settings": {
           "bundleName": "com.deloitte.mdg.salepricing.initiator.initiator.i18n.i18n"
         }
+      },
+      "MainServiceModel": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "SAPSalesModel": {
+        "dataSource": "SAPService",
+        "settings": {
+          "operationMode": "Server",
+          "earlyRequests": true
+        }
       }
     },
     "resources": {
@@ -93,12 +127,54 @@
           "target": [
             "TargetOverview"
           ]
+        },
+        {
+          "name": "RouteSubmission",
+          "pattern": "submission/{request_type}/:ca:/:cc:/:ve:/:request_id:",
+          "greedy": true,
+          "target": [
+            "TargetSubmission"
+          ]
+        },
+        {
+          "name": "RouteCreate",
+          "pattern": "Create/{data}",
+          "target": [
+            "TargetCreate"
+          ]
+        },
+        {
+          "name": "RouteDisplay",
+          "pattern": "Display",
+          "target": [
+            "TargetDisplay"
+          ]
         }
       ],
       "targets": {
         "TargetOverview": {
           "id": "Overview",
           "name": "Overview"
+        },
+        "TargetSubmission": {
+          "viewType": "XML",
+          "transition": "slide",
+          "viewId": "Submission",
+          "viewName": "Submission"
+        },
+        "TargetCreate": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "id": "Create",
+          "name": "Create"
+        },
+        "TargetDisplay": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "id": "Display",
+          "name": "Display"
         }
       }
     },

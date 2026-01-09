@@ -1,0 +1,177 @@
+<mvc:View
+    controllerName="com.deloitte.mdg.salepricing.initiator.initiator.controller.Submission"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns:smartTable="sap.ui.comp.smarttable"
+    xmlns="sap.m"
+    xmlns:sap.ui.unified="sap.ui.unified"
+>
+    <Page
+        id="Create"
+        title="Condition Records Create"
+        showNavButton="true"
+        navButtonPress="page_create_navigateBack"
+        backgroundDesign="Solid"
+    >
+        <content>
+            <Panel
+                id="Create_Page_Panel"
+                headerText="Condition Record Detail's"
+                expandable="true"
+                expanded="true"
+                width="auto"
+                class="sapUiResponsiveMargin"
+            >
+                <Table
+                    id="Create_Page_Table"
+                    inset="false"
+                    noDataText="No Data. Use 'Upload' or 'Add new' for adding records"
+                    selectionChange="onSelectionChange"
+                    alternateRowColors="false"
+                    mode="SingleSelectLeft"
+                    items="{
+                        path: 'localDataModel>/conditions'
+                    }"
+                >
+                    <headerToolbar>
+                        <OverflowToolbar
+                            id="Create_Page_OverflowToolbar"
+                            width="100%"
+                        >
+                            <content>
+                                <sap.ui.unified:FileUploader
+                                    xmlns:sap.ui.unified="sap.ui.unified"
+                                    id="fileUploader"
+                                    sameFilenameAllowed="true"
+                                    iconOnly="false"
+                                    buttonOnly="true"
+                                    fileType="XLSX,xlsx"
+                                    icon="sap-icon://upload"
+                                    iconFirst="true"
+                                    style="Emphasized"
+                                    change="uploadFile"
+                                    visible="true"
+                                    buttonText="Upload"
+                                />
+                                <Button
+                                    id="Create_Page_Button_Download_Template"
+                                    type="Default"
+                                    text="Download Template"
+                                    iconFirst="true"
+                                    icon="sap-icon://download"
+                                    press=""
+                                />
+                                <ToolbarSpacer id="Create_Page_ToolbarSpacer" />
+                                <Button
+                                    id="Create_Page_Button_Edit"
+                                    type="Default"
+                                    text="Edit"
+                                    iconFirst="true"
+                                    icon="sap-icon://edit"
+                                    enabled="false"
+                                    press=""
+                                />
+                                <Button
+                                    id="Create_Page_Button_Add_New"
+                                    type="Default"
+                                    text="Add New"
+                                    iconFirst="true"
+                                    icon="sap-icon://add"
+                                    press="page_create_addNew"
+                                />
+                                <Button
+                                    id="Create_Page_Button_Delete"
+                                    type="Default"
+                                    text="Delete"
+                                    iconFirst="true"
+                                    icon="sap-icon://delete"
+                                    enabled="false"
+                                    press=""
+                                />
+                                <Button
+                                    id="Create_Page_Button_Export"
+                                    type="Default"
+                                    text="Export"
+                                    iconFirst="true"
+                                    icon="sap-icon://excel-attachment"
+                                    press=""
+                                />
+                            </content>
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column id="Create_Page_Column">
+                            <Text id="Create_Page_Text1" text="Text 1"/>
+                        </Column>
+                        <Column id="Create_Page_Column1">
+                            <Text id="Create_Page_Text2" text="Text 2"/>
+                        </Column>
+                        <Column id="Create_Page_Column2">
+                            <Text id="Create_Page_Text3" text="Text 3"/>
+                        </Column>
+                        <Column id="Create_Page_Column3">
+                            <Text id="Create_Page_Text4" text="Text 4"/>
+                        </Column>
+                        <Column id="Create_Page_Column4">
+                            <Text id="Create_Page_Text5" text="Text 5"/>
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem id="Create_Page_ColumnListItem">
+                            <cells>
+                                <Text id="Create_Page_Text6" text="{col1}" />
+                                <Text id="Create_Page_Text7" text="{col2}" />
+                                <Text id="Create_Page_Text8" text="{col3}" />
+                                <Text id="Create_Page_Text9" text="{col4}" />
+                                <Text id="Create_Page_Text10" text="{col5}" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </Panel>
+
+            <Panel
+                id="Create_Page_Panel_Comments"
+                expanded="true"
+                expandable="true"
+                headerText="Comments"
+                width="auto"
+                class="sapUiResponsiveMargin"
+            >
+                <content>
+                    <FeedInput
+                        id="Create_Page_FeedInput"
+                        post="onCommentPost"
+                        class="sapUiSmallMarginTopBottom"
+                        maxLength="100"
+                        placeholder="Add a comment - Character length limited to 100"
+                        icon="sap-icon://comment"
+                        rows="1"
+                    />
+                    <Image id="Create_Page_Image" src="" width=""/>
+                    <List showSeparators="Inner" id="Create_Page_List">
+                        <FeedListItem id="fliComment" sender="" timestamp="" text=""/>
+                    </List>
+                </content>
+            </Panel>
+        </content>
+        <footer>
+            <OverflowToolbar id="Create_Page_OverflowToolbar1">
+                <Button
+                    id="Create_Page_Button_Message"
+                    icon="sap-icon://message-popup"
+                    press=""
+                    text=""
+                />
+                <ToolbarSpacer id="Create_Page_ToolbarSpacer1" />
+                <Button
+                    id="Create_Page_Button_InitiateApprovalProcess"
+                    text="Send for Approval"
+                    icon="sap-icon://paper-plane"
+                    type="Accept"
+                    press=""
+                />
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>

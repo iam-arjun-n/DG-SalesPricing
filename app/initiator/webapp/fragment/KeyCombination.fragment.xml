@@ -1,0 +1,47 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:controller="sap.ui.core.mvc.Controller"
+>
+    <Dialog
+        id="KCF_Fragment_Dialog"
+        title="Key Combination"
+        draggable="true"
+        resizable="true"
+        contentWidth="400px"
+        contentHeight="300px"
+        class="sapUiResponsivePadding--header sapUiResponsivePadding--content"
+    >
+        <List
+    id="KCF_Fragment_List"
+    mode="SingleSelectMaster"
+    items="{ path: '' }"
+    itemPress="controller:dialog_keyCombination_select"
+>
+
+            <StandardListItem
+                id="KCF_Fragment_StandardListItem"
+                title=""
+                type="Active"
+            />
+        </List>
+
+        <beginButton>
+            <Button
+                id="KCF_Fragment_Button_Select"
+                icon="sap-icon://accept"
+                text="Select"
+                press="dialog_keyCombination_confirm"
+            />
+        </beginButton>
+
+        <endButton>
+            <Button
+                id="KCF_Fragment_Button_Cancel"
+                icon="sap-icon://decline"
+                text="Cancel"
+                press="dialog_keyCombination_cancel"
+            />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

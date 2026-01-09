@@ -1,6 +1,148 @@
-<mvc:View controllerName="com.deloitte.mdg.salepricing.initiator.initiator.controller.Overview"
+<mvc:View
+    xmlns="sap.f"
+    xmlns:m="sap.m"
+    xmlns:core="sap.ui.core"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
-    </Page>
+    xmlns:sfb="sap.ui.comp.smartfilterbar"
+    xmlns:smartTable="sap.ui.comp.smarttable" 
+    xmlns:sv="sap.ui.comp.smartvariants"
+    controllerName="com.deloitte.mdg.salepricing.initiator.initiator.controller.Overview"
+    height="100%"
+>
+    <DynamicPage id="Main_Page_DynamicPage" fitContent="true">
+        <title>
+            <DynamicPageTitle id="Main_Page_DynamicPageTitle" backgroundDesign="Solid">
+                <heading>
+                    <m:Title id="Main_Page_Title" text="Sales Pricing - Create Requests" />
+                </heading>
+                <actions>
+                    <m:ToolbarSpacer id="Main_Page_ToolbarSpacer1" />
+                    <m:Button id="Main_Page_Button_Create" text="Create" press="page_main_create" type="Emphasized" />
+                    <m:Button id="Main_Page_Button_Change" text="Change / Extend" press="page_main_change" type="Emphasized" />
+                </actions>
+            </DynamicPageTitle>
+        </title>
+
+        <header>
+            <DynamicPageHeader id="Main_Page_DynamicPageHeader">
+                <sfb:SmartFilterBar
+                    id="Main_Page_SmartFilterBars"
+                    entitySet="A_SlsPrcgConditionRecord"
+                    persistencyKey="UniqueAndStablePersistencyKey"
+                    search="onSearch"
+                >
+                    <sfb:controlConfiguration>
+                        <sfb:ControlConfiguration id="req" key="ReqId" label="Request Number" visibleInAdvancedArea="true">
+                            <sfb:customControl>
+                                <m:MultiInput
+                                    name="Request No"
+                                    id="REQ"
+                                    showValueHelp="true"
+                                    enabled="true"
+                                    editable="true"
+                                />
+                            </sfb:customControl>
+                        </sfb:ControlConfiguration>
+
+                        <sfb:ControlConfiguration id="aa" key="Type" label="Type" visibleInAdvancedArea="true">
+                            <sfb:customControl>
+                                <m:Select id="Main_Page_CustomSelect1" width="300px">
+                                    <core:Item id="Main_Page_Item1" key="" text="" />
+                                    <core:Item id="Main_Page_Item2" key="Change" text="Change" />
+                                    <core:Item id="Main_Page_Item3" key="Create" text="Create" />
+                                    <core:Item id="Main_Page_Item4" key="Extend" text="Extend" />
+                                </m:Select>
+                            </sfb:customControl>
+                        </sfb:ControlConfiguration>
+
+                        <sfb:ControlConfiguration id="bb" key="WorkflowStatus" label="Status" visibleInAdvancedArea="true">
+                            <sfb:customControl>
+                                <m:Select id="Main_Page_CustomSelect2" width="300px">
+                                    <core:Item id="Main_Page_Item5" key="" text="" />
+                                    <core:Item id="Main_Page_Item6" key="Completed" text="Completed" />
+                                    <core:Item id="Main_Page_Item7" key="In Approval" text="In Approval" />
+                                </m:Select>
+                            </sfb:customControl>
+                        </sfb:ControlConfiguration>
+
+                        <sfb:ControlConfiguration id="Main_Page_Createdby" key="CreatedBy" label="Created By" visibleInAdvancedArea="true">
+                            <sfb:customControl>
+                                <m:MultiInput
+                                    name="Created By"
+                                    id="Main_Page_CBY"
+                                    showValueHelp="true"
+                                    enabled="true"
+                                    editable="true"
+                                />
+                            </sfb:customControl>
+                        </sfb:ControlConfiguration>
+
+                        <sfb:ControlConfiguration id="Main_Page_createdon" key="CreatedOn" label="Created On" visibleInAdvancedArea="true">
+                            <sfb:customControl>
+                                <m:DatePicker
+                                    name="Created On"
+                                    id="Main_Page_CON"
+                                    displayFormat="dd-MM-yyyy"
+                                    valueFormat="yyyy-MM-dd"
+                                    enabled="true"
+                                    editable="true"
+                                />
+                            </sfb:customControl>
+                        </sfb:ControlConfiguration>
+                    </sfb:controlConfiguration>
+                </sfb:SmartFilterBar>
+            </DynamicPageHeader>
+        </header>
+
+        <content>
+            <m:VBox id="Main_Page_VBox4" height="100%">
+                <m:Table
+                    id="mTable"
+                    items="{ path: 'YourModel>/YourEntitySet', sorter: [{ path: 'CreatedOn', descending: true }] }"
+                    backgroundDesign="Solid"
+                    noDataText="No data to display"
+                    selectionChange="onSelectionRow"
+                    mode="SingleSelectLeft"
+                    alternateRowColors="true"
+                    sticky="HeaderToolbar,ColumnHeaders"
+                    includeItemInSelection="true"
+                >
+                    <m:headerToolbar>
+                        <m:Toolbar id="Main_Page_Toolbar">
+                            <m:Title id="Main_Page_Title1" text="Sales Pricing's Created" />
+                            <m:ToolbarSpacer id="Main_Page_ToolbarSpacer5" />
+                            <m:Button id="Main_Page_Button_View" icon="sap-icon://detail-view" text="View" enabled="false" type="Emphasized" />
+                        </m:Toolbar>
+                    </m:headerToolbar>
+
+                    <m:columns>
+                        <m:Column id="Main_Page_Column"><m:Text id="Main_Page_Text" text="Request Number" /></m:Column>
+                        <m:Column id="Main_Page_Column1"><m:Text id="Main_Page_Text1" text="Status" /></m:Column>
+                        <m:Column id="Main_Page_Column2"><m:Text id="Main_Page_Text2" text="Type" /></m:Column>
+                        <m:Column id="Main_Page_Column3"><m:Text id="Main_Page_Text3" text="Created By" /></m:Column>
+                        <m:Column id="Main_Page_Column4"><m:Text id="Main_Page_Text4" text="Created On" /></m:Column>
+                    </m:columns>
+
+                    <m:items>
+                        <m:ColumnListItem id="Main_Page_ColumnListItem" type="Active" highlight="{YourModel>HighlightProperty}">
+                            <m:cells>
+                                <m:HBox id="Main_Page_HBox">
+                                    <m:Text id="Main_Page_Text5" text="{YourModel>RequestNumber}" />
+                                    <m:Link id="Main_Page_Link" text="{YourModel>LinkText}" press="onLinkPress" />
+                                </m:HBox>
+                                <m:ObjectIdentifier id="Main_Page_ObjectIdentifier" title="{YourModel>Title}" titleActive="true" />
+                                <m:ObjectStatus id="Main_Page_ObjectStatus" text="{YourModel>Status}" state="{YourModel>StatusState}" />
+                                <m:Text id="Main_Page_Text6" text="{YourModel>Type}" />
+                                <m:VBox id="Main_Page_VBox">
+                                    <m:Text id="Main_Page_Text7" text="{YourModel>CreatedBy}" />
+                                    <m:Link id="Main_Page_Link1" text="{YourModel>CreatedByLink}" press="onCreatedByLinkPress" />
+                                </m:VBox>
+                                <m:Text id="Main_Page_Text8" text="{YourModel>CreatedOn}" />
+                            </m:cells>
+                        </m:ColumnListItem>
+                    </m:items>
+                </m:Table>
+            </m:VBox>
+        </content>
+    </DynamicPage>
 </mvc:View>

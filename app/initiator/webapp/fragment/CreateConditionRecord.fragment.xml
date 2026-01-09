@@ -1,0 +1,49 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Dialog
+        id="CCR_Fragment_Dialog"
+        title="Create Condition Record"
+        draggable="true"
+        resizable="true"
+    >
+        <VBox class="sapUiSmallMargin">
+            <Label text="Condition Type" required="true" />
+            <Input
+                id="CCR_Fragment_Input"
+                showValueHelp="true"
+                showSuggestion="true"
+                valueHelpRequest=".onConditionTypeValueHelp"
+                suggest=".onConditionTypeSuggest"
+                liveChange=".onConditionTypeLiveChange"   
+                suggestionItems="{
+                    path: '/ZI_CONDITIONTYPETEXT'
+                }"
+            >
+                <suggestionItems>
+                    <core:ListItem
+                        key="{ConditionType}"
+                        text="{ConditionType}"
+                        additionalText="{Name}"
+                    />
+                </suggestionItems>
+            </Input>
+        </VBox>
+
+        <beginButton>
+            <Button
+                text="Submit"
+                type="Emphasized"
+                press=".dialog_createConditionRecord_submit"
+            />
+        </beginButton>
+
+        <endButton>
+            <Button
+                text="Cancel"
+                press=".dialog_createConditionRecord_cancel"
+            />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>
