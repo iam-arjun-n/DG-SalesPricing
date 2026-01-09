@@ -1,0 +1,206 @@
+_schema-version: 3.3.0
+ID: DG-SalesPricing
+description: A simple CAP project.
+version: 1.0.0
+modules:
+- name: DG-SalesPricing-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+    - name: DG-SalesPricing-auth
+    - name: DG-SalesPricing-db
+    - name: DG-SalesPricing-connectivity
+    - name: DG-SalesPricing-destination
+  provides:
+    - name: srv-api
+      properties:
+        srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    memory: 256M
+    instances: 1
+  build-parameters:
+    builder: npm-ci
+- name: DG-SalesPricing-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+    - name: DG-SalesPricing-db
+  parameters:
+    buildpack: nodejs_buildpack
+- name: DG-SalesPricing
+  type: approuter.nodejs
+  path: app/router
+  requires:
+    - name: srv-api
+      group: destinations
+      properties:
+        name: srv-api
+        url: ~{srv-url}
+        forwardAuthToken: true
+    - name: DG-SalesPricing-auth
+    - name: DG-SalesPricing-destination
+    - name: DG-SalesPricing-html5-runtime
+  provides:
+    - name: app-api
+      properties:
+        app-uri: ${default-uri}
+        app-protocol: ${protocol}
+  parameters:
+    disk-quota: 256M
+    memory: 256M
+    keep-existing-routes: false
+    routes:
+      - host: dg-salespricing-dev
+- name: DG-SalesPricing-app-deployer
+  type: com.sap.application.content
+  path: gen
+  requires:
+    - name: DG-SalesPricing-auth
+    - name: srv-api
+    - name: DG-SalesPricing-html5-repo-host
+      parameters:
+        content-target: true
+        config:
+          HTML5Runtime_enabled: true
+  build-parameters:
+    build-result: app/
+    requires:
+      - name: comdeloittemdgsalepricinginitiatorinitiator
+        artifacts:
+          - comdeloittemdgsalepricinginitiatorinitiator.zip
+        target-path: app/
+      - name: comdeloittemdgsalepricingapproverapprover
+        artifacts:
+          - comdeloittemdgsalepricingapproverapprover.zip
+        target-path: app/
+- name: comdeloittemdgsalepricinginitiatorinitiator
+  type: html5
+  path: app/initiator
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+      - npm install
+      - npm run build:cf
+    supported-platforms: []
+- name: comdeloittemdgsalepricingapproverapprover
+  type: html5
+  path: app/approver
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+      - npm install
+      - npm run build:cf
+    supported-platforms: []
+- name: DG-SalesPricing-destination-content
+  type: com.sap.application.content
+  requires:
+    - name: DG-SalesPricing-destination
+      parameters:
+        content-target: true
+    - name: DG-SalesPricing-html5-repo-host
+      parameters:
+        service-key:
+          name: DG-SalesPricing-html5-repo-host-key
+    - name: DG-SalesPricing-auth
+      parameters:
+        service-key:
+          name: DG-SalesPricing-auth-key
+  parameters:
+    content:
+      instance:
+        destinations:
+          - Name: DG_SalesPricing_repo_host
+            ServiceInstanceName: DG-SalesPricing-html5-repo-host
+            ServiceKeyName: DG-SalesPricing-html5-repo-host-key
+            sap.cloud.service: DG-SalesPricing
+          - Name: DG_SalesPricing_xsuaa
+            Authentication: OAuth2UserTokenExchange
+            ServiceInstanceName: DG-SalesPricing-auth
+            ServiceKeyName: DG-SalesPricing-auth-key
+            sap.cloud.service: DG-SalesPricing
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: workflow
+  type: com.sap.application.content
+  path: workflow
+  requires:
+    - name: sap_processautomation
+      parameters:
+        content-target: true
+        service-key:
+          name: spa-workflow-service-key
+          config:
+            deployUsageScenario: workflow
+resources:
+- name: DG-SalesPricing-auth
+  type: org.cloudfoundry.managed-service
+  requires:
+    - name: app-api
+  parameters:
+    service: xsuaa
+    service-plan: application
+    path: ./xs-security.json
+    service-key:
+      name: DG-SalesPricing-auth-key
+    config:
+      xsappname: dg-salepricing
+      tenant-mode: dedicated
+      oauth2-configuration:
+        redirect-uris:
+          - https://*~{app-api/app-uri}/**
+- name: DG-SalesPricing-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+- name: DG-SalesPricing-connectivity
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: connectivity
+    service-plan: lite
+- name: DG-SalesPricing-destination
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: destination
+    service-plan: lite
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+            - Name: ui5
+              Type: HTTP
+              URL: https://ui5.sap.com
+              Authentication: NoAuthentication
+              ProxyType: Internet
+          existing_destinations_policy: update
+- name: DG-SalesPricing-html5-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-host
+    service-key:
+      name: DG-SalesPricing-html5-repo-host-key
+- name: DG-SalesPricing-html5-runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
+- name: sap_processautomation
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: process-automation-service
+    service-plan: standard
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
