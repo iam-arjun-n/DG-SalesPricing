@@ -180,10 +180,285 @@ sap.ui.define([
                     }
                 }
             });
-        }
+        },
 
         //F4 Helper Functions
+        _openF4Dialog: function (title) {
+
+            if (!this._F4Dialog) {
+                Fragment.load({
+                    id: this.getView().getId(),
+                    name: "com.deloitte.mdg.salepricing.initiator.initiator.fragment.F4Dialog",
+                    controller: this
+                }).then((oDialog) => {
+                    this._F4Dialog = oDialog;
+                    this.getView().addDependent(oDialog);
+                    oDialog.setTitle(title);
+                    oDialog.open();
+                });
+            } else {
+                this._F4Dialog.setTitle(title);
+                this._F4Dialog.open();
+            }
+        },
+
+        onF4Search: function (oEvent) {
+            const sValue = oEvent.getParameter("newValue");
+
+            const oList = this.byId("F4List");
+            const oBinding = oList.getBinding("items");
+
+            const oFilter = new sap.ui.model.Filter({
+                filters: [
+                    new sap.ui.model.Filter("title", sap.ui.model.FilterOperator.Contains, sValue),
+                    new sap.ui.model.Filter("description", sap.ui.model.FilterOperator.Contains, sValue)
+                ],
+                and: false
+            });
+
+            oBinding.filter([oFilter]);
+        },
+
+        onF4Select: function (oEvent) {
+            const oItem = oEvent.getParameter("listItem");
+            if (!oItem) {
+                return;
+            }
+
+            const sValue = oItem.getTitle();
+
+            const oInput = sap.ui.getCore().byId(this._currentInputId);
+            if (oInput) {
+                oInput.setValue(sValue);
+
+                const oBinding = oInput.getBinding("value");
+                if (oBinding) {
+                    oBinding.getModel().setProperty(oBinding.getPath(), sValue);
+                }
+            }
+
+            const oSearch = this.byId("F4SearchField");
+            const oList = this.byId("F4List");
+
+            if (oSearch) {
+                oSearch.setValue("");
+            }
+            if (oList) {
+                oList.getBinding("items").filter([]);
+            }
+
+            this._F4Dialog.close();
+        },
+
+
+        onF4Cancel: function () {
+            this._F4Dialog.close();
+        },
 
         //F4 Main Functions
+        onF4_Field_SalesOrganization: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+
+            const inputId = oEvent.getSource().getId();
+            this._currentInputId = inputId;
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+            const entitySet = "/ZI_SALESORGANIZATION";
+
+            oModel.read(entitySet, {
+                success: (oData) => {
+                    const formattedData = oData.results.map(item => ({
+                        title: item.SalesOrganization,
+                        description: item.Name
+                    }));
+
+                    const wrappedData = { results: formattedData };
+                    const oF4Model = new sap.ui.model.json.JSONModel(wrappedData);
+                    this.getView().setModel(oF4Model, "F4Model");
+                    this._openF4Dialog("Sales Organization");
+
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: (err) => {
+                    sap.ui.core.BusyIndicator.hide();
+                    sap.m.MessageBox.error("Failed to load Sales Organization: " + err.message);
+                }
+            });
+        },
+
+        onF4_Field_DistributionChannel: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+
+            const inputId = oEvent.getSource().getId();
+            this._currentInputId = inputId;
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+            const entitySet = "/C_Dischannelvaluehelp";
+
+            oModel.read(entitySet, {
+                success: (oData) => {
+                    const formattedData = oData.results.map(item => ({
+                        title: item.DistributionChannel,
+                        description: item.DistributionChannel_Text
+                    }));
+
+                    const wrappedData = { results: formattedData };
+                    const oF4Model = new sap.ui.model.json.JSONModel(wrappedData);
+                    this.getView().setModel(oF4Model, "F4Model");
+                    this._openF4Dialog("Distribution Channel");
+
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: (err) => {
+                    sap.ui.core.BusyIndicator.hide();
+                    sap.m.MessageBox.error("Failed to load Distribution Channel: " + err.message);
+                }
+            });
+        },
+
+        onF4_Field_Division: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+
+            oModel.read("/ZP_DIVISION_VH", {
+                success: (oData) => {
+                    const data = oData.results.map(i => ({
+                        title: i.division,
+                        description: i.Text
+                    }));
+
+                    this.getView().setModel(new JSONModel({ results: data }), "F4Model");
+                    this._openF4Dialog("Division");
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: () => {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Failed to load Division");
+                }
+            });
+        },
+
+        onF4_Field_Customer: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+
+            oModel.read("/I_Customer_VH", {
+                success: (oData) => {
+                    const data = oData.results.map(i => ({
+                        title: i.Customer,
+                        description: i.CustomerName
+                    }));
+
+                    this.getView().setModel(new JSONModel({ results: data }), "F4Model");
+                    this._openF4Dialog("Customer");
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: () => {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Failed to load Customer");
+                }
+            });
+        },
+
+        onF4_Field_SoldToParty: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+
+            oModel.read("/I_Customer_VH", {
+                success: (oData) => {
+                    const data = oData.results.map(i => ({
+                        title: i.Customer,
+                        description: i.CustomerName
+                    }));
+
+                    this.getView().setModel(new JSONModel({ results: data }), "F4Model");
+                    this._openF4Dialog("Sold-To Party");
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: () => {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Failed to load Sold-To Party");
+                }
+            });
+        },
+
+        onF4_Field_Material: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+
+            oModel.read("/I_MaterialStdVH", {
+                success: (oData) => {
+                    const data = oData.results.map(i => ({
+                        title: i.Material,
+                        description: i.Material_Text
+                    }));
+
+                    this.getView().setModel(new JSONModel({ results: data }), "F4Model");
+                    this._openF4Dialog("Material");
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: () => {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Failed to load Material");
+                }
+            });
+        },
+
+        onF4_Field_MaterialGroup: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+
+            oModel.read("/I_MaterialGroup", {
+                success: (oData) => {
+                    const data = oData.results.map(i => ({
+                        title: i.MaterialGroup,
+                        description: i.MaterialGroup_Text
+                    }));
+
+                    this.getView().setModel(new JSONModel({ results: data }), "F4Model");
+                    this._openF4Dialog("Material Group");
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: () => {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Failed to load Material Group");
+                }
+            });
+        },
+
+        onF4_Field_Supplier: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+
+            oModel.read("/I_Supplier_VH", {
+                success: (oData) => {
+                    const data = oData.results.map(i => ({
+                        title: i.Supplier,
+                        description: i.SupplierName
+                    }));
+
+                    this.getView().setModel(new JSONModel({ results: data }), "F4Model");
+                    this._openF4Dialog("Supplier");
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: () => {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Failed to load Supplier");
+                }
+            });
+        },
+
     });
 });

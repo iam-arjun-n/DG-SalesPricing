@@ -31,6 +31,14 @@
         "settings": {
           "odataVersion": "2.0"
         }
+      },
+      "ValueHelp1Service": {
+        "uri": "/sap/opu/odata/sap/ZMATERIAL_MASTER_SRV/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "2.0"
+        }
       }
     },
     "crossNavigation": {
@@ -97,6 +105,15 @@
         "dataSource": "SAPService",
         "settings": {
           "operationMode": "Server",
+          "earlyRequests": true
+        }
+      },
+      "ValueHelp1Model": {
+        "dataSource": "ValueHelp1Service",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
           "earlyRequests": true
         }
       }

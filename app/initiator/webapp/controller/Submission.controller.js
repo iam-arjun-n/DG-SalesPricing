@@ -38,12 +38,12 @@ sap.ui.define([
       }
     },
 
-    page_create_navigateBack: function () {
+    navBack: function () {
       this.navigateTo("RouteOverview");
     },
 
 
-    page_create_addNew: function () {
+    onAddNew: function () {
       const oView = this.getView();
       if (!this._dialog_createConditionRecord) {
         Fragment.load({
@@ -60,7 +60,6 @@ sap.ui.define([
       }
     },
 
-    /********** Condition Record Fragment **********/
     dialog_createConditionRecord_submit: async function () {
       const oView = this.getView();
       const oInput = Fragment.byId(oView.getId(), "CCR_Fragment_Input");
@@ -194,7 +193,6 @@ sap.ui.define([
       oBinding.filter(sValue ? [this._buildConditionTypeFilter(sValue)] : [this._buildConditionTypeFilter("")]);
     },
 
-    /********** Key Combination Fragment **********/
     dialog_keyCombination_select: function (oEvent) {
       const oSelectedItem = oEvent.getParameter("listItem");
       if (oSelectedItem) {
