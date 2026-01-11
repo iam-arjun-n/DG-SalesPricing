@@ -30,7 +30,7 @@
                     alternateRowColors="false"
                     mode="SingleSelectLeft"
                     items="{
-                        path: 'localDataModel>/conditions'
+                        path: 'submissionModel>/rows'
                     }"
                 >
                     <headerToolbar>
@@ -100,61 +100,21 @@
                         </OverflowToolbar>
                     </headerToolbar>
                     <columns>
-                        <Column id="Create_Page_Column">
-                            <Text
-                                id="Create_Page_Text1"
-                                text="Text 1"
-                            />
-                        </Column>
-                        <Column id="Create_Page_Column1">
-                            <Text
-                                id="Create_Page_Text2"
-                                text="Text 2"
-                            />
-                        </Column>
-                        <Column id="Create_Page_Column2">
-                            <Text
-                                id="Create_Page_Text3"
-                                text="Text 3"
-                            />
-                        </Column>
-                        <Column id="Create_Page_Column3">
-                            <Text
-                                id="Create_Page_Text4"
-                                text="Text 4"
-                            />
-                        </Column>
-                        <Column id="Create_Page_Column4">
-                            <Text
-                                id="Create_Page_Text5"
-                                text="Text 5"
-                            />
-                        </Column>
+                        <Column><Text text="Condition Type"/></Column>
+    <Column><Text text="Sales Organization"/></Column>
+    <Column><Text text="Distribution Channel"/></Column>
+    <Column><Text text="Customer"/></Column>
+    <Column><Text text="Material"/></Column>
                     </columns>
                     <items>
                         <ColumnListItem id="Create_Page_ColumnListItem">
                             <cells>
-                                <Text
-                                    id="Create_Page_Text6"
-                                    text="{col1}"
-                                />
-                                <Text
-                                    id="Create_Page_Text7"
-                                    text="{col2}"
-                                />
-                                <Text
-                                    id="Create_Page_Text8"
-                                    text="{col3}"
-                                />
-                                <Text
-                                    id="Create_Page_Text9"
-                                    text="{col4}"
-                                />
-                                <Text
-                                    id="Create_Page_Text10"
-                                    text="{col5}"
-                                />
-                            </cells>
+        <Text text="{submissionModel>Display/ConditionType}"/>
+        <Text text="{submissionModel>Display/SalesOrganization}"/>
+        <Text text="{submissionModel>Display/DistributionChannel}"/>
+        <Text text="{submissionModel>Display/Customer}"/>
+        <Text text="{submissionModel>Display/Material}"/>
+      </cells>
                         </ColumnListItem>
                     </items>
                 </Table>

@@ -15,8 +15,35 @@ sap.ui.define([
             var oModel = this.getOwnerComponent().getModel("SAPSalesModel");
             this.getView().setModel(oModel);
 
-            var oTableModel = new JSONModel({ items: [] });
-            this.getView().setModel(oTableModel, "materialModel");
+            var oFieldModel = new JSONModel({
+                Sales_Organization: "",
+                Distribution_Channel: "",
+                Customer: "",
+                Material: "",
+                Material_Price_Group: "",
+                Division: "",
+                Departure_City_Region: "",
+                Sold_To_Party: "",
+                Price_List_Type: "",
+                Document_Currency: "",
+                Supplier: ""
+            });
+
+            this.getView().setModel(oFieldModel, "fieldModel");
+
+            var oColumnModel = new JSONModel({ rows: [] });
+            this.getView().setModel(oColumnModel, "columnModel");
+
+
+            var oDraftModel = new sap.ui.model.json.JSONModel({
+                ConditionType: "",
+                KeyCombinationId: "",
+                Fields: {},
+                Columns: []
+            });
+
+            this.getView().setModel(oDraftModel, "draftModel");
+
 
             var oViewModel = new JSONModel({
                 Field_Sales_Organization: { visible: false },
@@ -76,6 +103,7 @@ sap.ui.define([
         },
 
         _onRouteMatched: function (oEvent) {
+
             var sEncodedParams = oEvent.getParameter("arguments").data;
             if (!sEncodedParams) {
                 return;
@@ -85,6 +113,13 @@ sap.ui.define([
                 var oParams = JSON.parse(decodeURIComponent(sEncodedParams));
                 var sConditionType = oParams.conditionType;
                 var sKeyCombinationId = oParams.keyCombinationId;
+
+                var oDraftModel = this.getView().getModel("draftModel");
+
+                oDraftModel.setProperty("/ConditionType", sConditionType);
+                oDraftModel.setProperty("/KeyCombinationId", sKeyCombinationId);
+                oDraftModel.setProperty("/Fields", {});
+                oDraftModel.setProperty("/Columns", []);
 
                 sap.ui.require([
                     "com/deloitte/mdg/salepricing/initiator/initiator/model/keyCombinations"
@@ -109,13 +144,9 @@ sap.ui.define([
                         });
                     }
 
-                    // 🔹 Reset table and add ONE empty row
-                    var oTableModel = this.getView().getModel("materialModel");
-                    oTableModel.setProperty("/items", []);
-                    oTableModel.getProperty("/items").push(
-                        this._createEmptyRow()
-                    );
-                    oTableModel.refresh(true);
+                    var oColumnModel = this.getView().getModel("columnModel");
+                    oColumnModel.setProperty("/rows", [this._createEmptyRow()]);
+                    oColumnModel.refresh(true);
 
                 }.bind(this));
 
@@ -142,11 +173,11 @@ sap.ui.define([
         },
 
         onAddRow: function () {
-            var oTableModel = this.getView().getModel("materialModel");
-            var aItems = oTableModel.getProperty("/items");
+            var oColumnModel = this.getView().getModel("columnModel");
+            var aRows = oColumnModel.getProperty("/rows");
 
-            aItems.push(this._createEmptyRow());
-            oTableModel.refresh(true);
+            aRows.push(this._createEmptyRow());
+            oColumnModel.refresh(true);
         },
 
         navigateTo: function (sRoute) {
@@ -154,6 +185,7 @@ sap.ui.define([
         },
 
         navBack: function () {
+            this._resetAllModels();
             this.getOwnerComponent().getRouter().navTo("RouteSubmission", {
                 request_type: "create"
             });
@@ -161,8 +193,8 @@ sap.ui.define([
 
         onDeleteRow: function () {
             var oTable = this.byId("CreatePriceCondition_Page_Table");
-            var oModel = this.getView().getModel("materialModel");
-            var aData = oModel.getProperty("/items");
+            var oModel = this.getView().getModel("columnModel");
+            var aData = oModel.getProperty("/rows");
             var aSelectedIndices = oTable.getSelectedIndices();
 
             if (!aSelectedIndices.length) {
@@ -492,6 +524,139 @@ sap.ui.define([
                 }
             });
         },
+
+
+        // Suggestion Function
+        onSuggestSalesOrganization: function () { },
+        onSuggestDistributionChannel: function () { },
+        onSuggestCustomer: function () { },
+        onSuggestMaterial: function () { },
+        onSuggestMaterialGroup: function () { },
+        onSuggestDivision: function () { },
+        onSuggestDepartureCityRegion: function () { },
+        onSuggestSoldToParty: function () { },
+        onSuggestPriceListType: function () { },
+        onSuggestDocumentCurrency: function () { },
+        onSuggestSupplier: function () { },
+
+
+        // Live Change Function
+        onLiveSalesOrganization: function () { },
+        onLiveDistributionChannel: function () { },
+        onLiveCustomer: function () { },
+        onLiveMaterial: function () { },
+        onLiveMaterialGroup: function () { },
+        onLiveDivision: function () { },
+        onLiveDepartureCityRegion: function () { },
+        onLiveSoldToParty: function () { },
+        onLivePriceListType: function () { },
+        onLiveDocumentCurrency: function () { },
+        onLiveSupplier: function () { },
+
+        //Save Function
+        _collectFields: function () {
+            return {
+                ...this.getView().getModel("fieldModel").getData()
+            };
+        },
+
+        _collectColumns: function () {
+            const aRows = this.getView()
+                .getModel("columnModel")
+                .getProperty("/rows") || [];
+
+            return aRows.map(r => ({ ...r }));
+        },
+
+        _resolveValue: function (draft, fieldName) {
+
+            if (draft.Fields && draft.Fields[fieldName]) {
+                return draft.Fields[fieldName];
+            }
+
+            if (draft.Columns && draft.Columns.length > 0) {
+                return draft.Columns[0][fieldName] || "";
+            }
+
+            return "";
+        },
+
+        //Reset Function
+        _resetAllModels: function () {
+            // Reset field model
+            this.getView().getModel("fieldModel").setData({
+                Sales_Organization: "",
+                Distribution_Channel: "",
+                Customer: "",
+                Material: "",
+                Material_Price_Group: "",
+                Division: "",
+                Departure_City_Region: "",
+                Sold_To_Party: "",
+                Price_List_Type: "",
+                Document_Currency: "",
+                Supplier: ""
+            });
+
+            // Reset column model
+            this.getView().getModel("columnModel").setData({
+                rows: []
+            });
+
+            // Reset draft model
+            this.getView().getModel("draftModel").setData({
+                ConditionType: "",
+                KeyCombinationId: "",
+                Fields: {},
+                Columns: []
+            });
+
+            // Reset runtime state
+            this._activeKeyCombination = null;
+        },
+
+        //Save Function
+        onSave: function () {
+            const oDraftModel = this.getView().getModel("draftModel");
+
+            oDraftModel.setProperty("/Fields", this._collectFields());
+            oDraftModel.setProperty("/Columns", this._collectColumns());
+
+            const oDraft = oDraftModel.getData();
+            const oSubmissionModel = this.getOwnerComponent().getModel("submissionModel");
+
+            const entry = {
+                Data: JSON.parse(JSON.stringify(oDraft)),
+                Display: {
+                    ConditionType: oDraft.ConditionType,
+                    KeyCombinationId: oDraft.KeyCombinationId,
+                    SalesOrganization: this._resolveValue(oDraft, "Sales_Organization"),
+                    DistributionChannel: this._resolveValue(oDraft, "Distribution_Channel"),
+                    Customer: this._resolveValue(oDraft, "Customer"),
+                    Material: this._resolveValue(oDraft, "Material"),
+                    Division: this._resolveValue(oDraft, "Division")
+                }
+            };
+
+            const aRows = oSubmissionModel.getProperty("/rows");
+            aRows.push(entry);
+            oSubmissionModel.refresh(true);
+
+            MessageToast.show("Condition record added");
+            this._resetAllModels();
+            this.getOwnerComponent()
+                .getRouter()
+                .navTo("RouteSubmission", { request_type: "create" });
+        },
+
+        //Cancel Function
+        onCancel: function () {
+            this._resetAllModels();
+
+            this.getOwnerComponent()
+                .getRouter()
+                .navTo("RouteSubmission", { request_type: "create" });
+        }
 
 
     });

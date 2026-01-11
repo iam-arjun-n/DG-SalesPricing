@@ -14,7 +14,7 @@ sap.ui.define([
 
         currentUser: "",
 
-         init: async function (){
+        init: async function () {
             // call the base component's init function
             UIComponent.prototype.init.apply(this, arguments);
             await this.loadUserInfo();
@@ -23,6 +23,10 @@ sap.ui.define([
 
             // enable routing
             this.getRouter().initialize();
+            this.setModel(new sap.ui.model.json.JSONModel({
+                rows: []
+            }), "submissionModel");
+
         },
 
         loadUserInfo: async function () {

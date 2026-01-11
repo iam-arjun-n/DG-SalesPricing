@@ -49,12 +49,13 @@
                     />
                     <Input
                         id="Field_Sales_Organization_Input"
+                        value="{fieldModel>/Sales_Organization}"
                         required="true"
                         showValueHelp="true"
                         showSuggestion="true"
                         valueHelpRequest="onF4_Field_SalesOrganization"
-                        suggest=""
-                        liveChange=""
+                        suggest="onSuggestSalesOrganization"
+                        liveChange="onLiveSalesOrganization"
                         visible="{viewModel>/Field_Sales_Organization/visible}"
                     />
                     <Label
@@ -66,12 +67,13 @@
                     />
                     <Input
                         id="Field_Distribution_Channel_Input"
+                        value="{fieldModel>/Distribution_Channel}"
                         required="false"
                         showValueHelp="true"
                         showSuggestion="true"
                         valueHelpRequest="onF4_Field_DistributionChannel"
-                        suggest=""
-                        liveChange=""
+                        suggest="onSuggestDistributionChannel"
+                        liveChange="onLiveDistributionChannel"
                         visible="{viewModel>/Field_Distribution_Channel/visible}"
                     />
                     <Label
@@ -83,12 +85,13 @@
                     />
                     <Input
                         id="Field_Customer_Input"
+                        value="{fieldModel>/Customer}"
                         required="true"
                         showValueHelp="true"
                         showSuggestion="true"
                         valueHelpRequest="onF4_Field_Customer"
-                        suggest=""
-                        liveChange=""
+                        suggest="onSuggestCustomer"
+                        liveChange="onLiveCustomer"
                         visible="{viewModel>/Field_Customer/visible}"
                     />
                     <Label
@@ -100,12 +103,13 @@
                     />
                     <Input
                         id="Field_Material_Input"
+                        value="{fieldModel>/Material}"
                         required="true"
                         showValueHelp="true"
                         showSuggestion="true"
                         valueHelpRequest="onF4_Field_Material"
-                        suggest=""
-                        liveChange=""
+                        suggest="onSuggestMaterial"
+                        liveChange="onLiveMaterial"
                         visible="{viewModel>/Field_Material/visible}"
                     />
                     <Label
@@ -117,12 +121,13 @@
                     />
                     <Input
                         id="Field_Material_Price_Group_Input"
+                        value="{fieldModel>/Material_Price_Group}"
                         required="true"
                         showValueHelp="true"
                         showSuggestion="true"
                         valueHelpRequest="onF4_Field_MaterialGroup"
-                        suggest=""
-                        liveChange=""
+                        suggest="onSuggestMaterialGroup"
+                        liveChange="onLiveMaterialGroup"
                         visible="{viewModel>/Field_Material_Price_Group/visible}"
                     />
                     <Label
@@ -134,12 +139,13 @@
                     />
                     <Input
                         id="Field_Division_Input"
+                        value="{fieldModel>/Division}"
                         required="true"
                         showValueHelp="true"
                         showSuggestion="true"
                         valueHelpRequest="onF4_Field_Division"
-                        suggest=""
-                        liveChange=""
+                        suggest="onSuggestDivision"
+                        liveChange="onLiveDivision"
                         visible="{viewModel>/Field_Division/visible}"
                     />
                     <Label
@@ -151,12 +157,13 @@
                     />
                     <Input
                         id="Field_Departure_City_Region_Input"
+                        value="{fieldModel>/Departure_City_Region}"
                         required="true"
                         showValueHelp="true"
                         showSuggestion="true"
                         valueHelpRequest=""
-                        suggest=""
-                        liveChange=""
+                        suggest="onSuggestDepartureCityRegion"
+                        liveChange="onLiveDepartureCityRegion"
                         visible="{viewModel>/Field_Departure_City_Region/visible}"
                     />
                     <Label
@@ -168,12 +175,13 @@
                     />
                     <Input
                         id="Field_Sold_To_Party_Input"
+                        value="{fieldModel>/Sold_To_Party}"
                         required="true"
                         showValueHelp="true"
                         showSuggestion="true"
                         valueHelpRequest="onF4_Field_SoldToParty"
-                        suggest=""
-                        liveChange=""
+                        suggest="onSuggestSoldToParty"
+                        liveChange="onLiveSoldToParty"
                         visible="{viewModel>/Field_Sold_To_Party/visible}"
                     />
                     <Label
@@ -185,12 +193,13 @@
                     />
                     <Input
                         id="Field_Price_List_Type_Input"
+                        value="{fieldModel>/Price_List_Type}"
                         required="true"
                         showValueHelp="true"
                         showSuggestion="true"
                         valueHelpRequest=""
-                        suggest=""
-                        liveChange=""
+                        suggest="onSuggestPriceListType"
+                        liveChange="onLivePriceListType"
                         visible="{viewModel>/Field_Price_List_Type/visible}"
                     />
                     <Label
@@ -202,12 +211,13 @@
                     />
                     <Input
                         id="Field_Document_Currency_Input"
+                        value="{fieldModel>/Document_Currency}"
                         required="true"
                         showValueHelp="true"
                         showSuggestion="true"
                         valueHelpRequest="onF4_Field_DocumentCurrency"
-                        suggest=""
-                        liveChange=""
+                        suggest="onSuggestDocumentCurrency"
+                        liveChange="onLiveDocumentCurrency"
                         visible="{viewModel>/Field_Document_Currency/visible}"
                     />
                     <Label
@@ -219,12 +229,13 @@
                     />
                     <Input
                         id="Field_Supplier_Input"
+                        value="{fieldModel>/Supplier}"
                         required="true"
                         showValueHelp="true"
                         showSuggestion="true"
                         valueHelpRequest="onF4_Field_Supplier"
-                        suggest=""
-                        liveChange=""
+                        suggest="onSuggestSupplier"
+                        liveChange="onLiveSupplier"
                         visible="{viewModel>/Field_Supplier/visible}"
                     />
                 </f:SimpleForm>
@@ -257,7 +268,7 @@
             >
                 <u:Table
                     id="CreatePriceCondition_Page_Table"
-                    rows="{materialModel>/items}"
+                    rows="{columnModel>/rows}"
                     selectionMode="Single"
                     rowSelectionChange="page_createPriceConditions_enableViewItem"
                 >
@@ -299,7 +310,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Material"
-                                    value=""
+                                    value="{columnModel>Material}"
                                     visible="{viewModel>/Column_Material/visible}"
                                 />
                             </u:template>
@@ -316,7 +327,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Material_Group"
-                                    value=""
+                                    value="{columnModel>Material_Group}"
                                     visible="{viewModel>/Column_Material_Group/visible}"
                                 />
                             </u:template>
@@ -333,7 +344,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Customer"
-                                    value=""
+                                    value="{columnModel>Customer}"
                                     visible="{viewModel>/Column_Customer/visible}"
                                 />
                             </u:template>
@@ -349,8 +360,8 @@
                             />
                             <u:template>
                                 <Input
-                                    id="Column_Input"
-                                    value=""
+                                    id="Column_Input_Plant"
+                                    value="{columnModel>Plant}"
                                     visible="{viewModel>/Column_Plant/visible}"
                                 />
                             </u:template>
@@ -367,7 +378,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Status"
-                                    value=""
+                                    value="{columnModel>Status}"
                                     visible="{viewModel>/Column_Status/visible}"
                                 />
                             </u:template>
@@ -384,7 +395,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Price_Group"
-                                    value=""
+                                    value="{columnModel>Price_Group}"
                                     visible="{viewModel>/Column_Price_Group/visible}"
                                 />
                             </u:template>
@@ -401,7 +412,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Departure_City_Region"
-                                    value=""
+                                    value="{columnModel>Departure_City_Region}"
                                     visible="{viewModel>/Column_Departure_City_Region/visible}"
                                 />
                             </u:template>
@@ -418,7 +429,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Tax_Class_Customer"
-                                    value=""
+                                    value="{columnModel>Tax_Class_Customer}"
                                     visible="{viewModel>/Column_Tax_Class_Customer/visible}"
                                 />
                             </u:template>
@@ -435,7 +446,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Tax_Class_Material"
-                                    value=""
+                                    value="{columnModel>Class_Material}"
                                     visible="{viewModel>/Column_Tax_Class_Material/visible}"
                                 />
                             </u:template>
@@ -452,7 +463,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Description"
-                                    value=""
+                                    value="{columnModel>Description}"
                                     visible="{viewModel>/Column_Description/visible}"
                                 />
                             </u:template>
@@ -469,7 +480,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Processing_Status"
-                                    value=""
+                                    value="{columnModel>Processing_Status}"
                                     visible="{viewModel>/Column_Processing_Status/visible}"
                                 />
                             </u:template>
@@ -486,7 +497,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Partner_Role"
-                                    value=""
+                                    value="{columnModel>Partner_Role}"
                                     visible="{viewModel>/Column_Partner_Role/visible}"
                                 />
                             </u:template>
@@ -503,7 +514,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Amount"
-                                    value=""
+                                    value="{columnModel>Amount}"
                                     visible="{viewModel>/Column_Amount/visible}"
                                 />
                             </u:template>
@@ -520,7 +531,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Unit"
-                                    value=""
+                                    value="{columnModel>Unit}"
                                     visible="{viewModel>/Column_Unit/visible}"
                                 />
                             </u:template>
@@ -537,7 +548,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Pricing_Unit"
-                                    value=""
+                                    value="{columnModel>Pricing_Unit}"
                                     visible="{viewModel>/Column_Pricing_Unit/visible}"
                                 />
                             </u:template>
@@ -554,7 +565,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_UoM"
-                                    value=""
+                                    value="{columnModel>UoM}"
                                     visible="{viewModel>/Column_UoM/visible}"
                                 />
                             </u:template>
@@ -571,7 +582,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Calculation_Type"
-                                    value=""
+                                    value="{columnModel>Calculation_Type}"
                                     visible="{viewModel>/Column_Calculation_Type/visible}"
                                 />
                             </u:template>
@@ -588,7 +599,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Scale_Base_Type"
-                                    value=""
+                                    value="{columnModel>Scale_Base_Type}"
                                     visible="{viewModel>/Column_Scale_Base_Type/visible}"
                                 />
                             </u:template>
@@ -605,7 +616,7 @@
                             <u:template>
                                 <DatePicker
                                     id="Column_DatePicker_Valid_From"
-                                    value=""
+                                    value="{columnModel>Valid_From}"
                                     valueFormat="yyyy-MM-dd"
                                     displayFormat="dd-MM-yyyy"
                                     visible="{viewModel>/Column_Valid_From/visible}"
@@ -624,7 +635,7 @@
                             <u:template>
                                 <DatePicker
                                     id="Column_DatePicker_Valid_To"
-                                    value=""
+                                    value="{columnModel>Valid_To}"
                                     valueFormat="yyyy-MM-dd"
                                     displayFormat="dd-MM-yyyy"
                                     visible="{viewModel>/Column_Valid_To/visible}"
@@ -711,7 +722,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Exclusion"
-                                    value=""
+                                    value="{columnModel>Exclusion}"
                                     visible="{viewModel>/Column_Exclusion/visible}"
                                 />
                             </u:template>
@@ -728,7 +739,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Payment_Terms"
-                                    value=""
+                                    value="{columnModel>Payment_Terms}"
                                     visible="{viewModel>/Column_Payment_Terms/visible}"
                                 />
                             </u:template>
@@ -745,7 +756,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Fixed_Value_Date"
-                                    value=""
+                                    value="{columnModel>Fixed_Value_Date}"
                                     visible="{viewModel>/Column_Fixed_Value_Date/visible}"
                                 />
                             </u:template>
@@ -762,7 +773,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Additional_Value_Days"
-                                    value=""
+                                    value="{columnModel>Additional_Value_Days}"
                                     visible="{viewModel>/Column_Additional_Value_Days/visible}"
                                 />
                             </u:template>
@@ -779,7 +790,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Tax_Code"
-                                    value=""
+                                    value="{columnModel>Input_Tax_Code}"
                                     visible="{viewModel>/Column_Tax_Code/visible}"
                                 />
                             </u:template>
@@ -796,7 +807,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Withholding_Tax_Code"
-                                    value=""
+                                    value="{columnModel>Withholding_Tax_Code}"
                                     visible="{viewModel>/Column_Withholding_Tax_Code/visible}"
                                 />
                             </u:template>
@@ -813,7 +824,7 @@
                             <u:template>
                                 <Input
                                     id="Column_Input_Licence_No"
-                                    value=""
+                                    value="{columnModel>Licence_No}"
                                     visible="{viewModel>/Column_Licence_No/visible}"
                                 />
                             </u:template>
@@ -830,7 +841,7 @@
                             <u:template>
                                 <DatePicker
                                     id="Column_DatePicker_Licence_Date"
-                                    value=""
+                                    value="{columnModel>Licence_Date}"
                                     valueFormat="yyyy-MM-dd"
                                     displayFormat="dd-MM-yyyy"
                                     visible="{viewModel>/Column_Licence_Date/visible}"
@@ -854,255 +865,7 @@
                                 />
                             </u:template>
                         </u:Column>
-                        <!-- <u:Column id="CreatePriceCondition_Page_Column1">
-                            <Label
-                                id="CreatePriceCondition_Page_Label5"
-                                text="Customer"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input"
-                                    value="{materialModel>Customer}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column2">
-                            <Label
-                                id="CreatePriceCondition_Page_Label6"
-                                text="Status"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input1"
-                                    value="{materialModel>Status}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column3">
-                            <Label
-                                id="CreatePriceCondition_Page_Label7"
-                                text="Description"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input2"
-                                    value="{materialModel>Description}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column4">
-                            <Label
-                                id="CreatePriceCondition_Page_Label8"
-                                text="Processing Status"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input3"
-                                    value="{materialModel>ProcessingStatus}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column5">
-                            <Label
-                                id="CreatePriceCondition_Page_Label9"
-                                text="Amount"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input4"
-                                    value="{materialModel>Amount}"
-                                    type="Number"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column6">
-                            <Label
-                                id="CreatePriceCondition_Page_Label10"
-                                text="Unit"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input5"
-                                    value="{materialModel>Unit}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column7">
-                            <Label
-                                id="CreatePriceCondition_Page_Label11"
-                                text="per"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input6"
-                                    value="{materialModel>Per}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column8">
-                            <Label
-                                id="CreatePriceCondition_Page_Label12"
-                                text="UoM"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input7"
-                                    value="{materialModel>UoM}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column9">
-                            <Label
-                                id="CreatePriceCondition_Page_Label13"
-                                text="Calculation Type"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input8"
-                                    value="{materialModel>CalculationType}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column10">
-                            <Label
-                                id="CreatePriceCondition_Page_Label14"
-                                text="Scale Base Type"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input9"
-                                    value="{materialModel>ScaleBaseType}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column11">
-                            <Label
-                                id="CreatePriceCondition_Page_Label15"
-                                text="Valid From"
-                            />
-                            <u:template>
-                                <DatePicker
-                                    id="CreatePriceCondition_Page_DatePicker"
-                                    value="{materialModel>ValidFrom}"
-                                    valueFormat="yyyy-MM-dd"
-                                    displayFormat="dd-MM-yyyy"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column12">
-                            <Label
-                                id="CreatePriceCondition_Page_Label16"
-                                text="Valid To"
-                            />
-                            <u:template>
-                                <DatePicker
-                                    id="CreatePriceCondition_Page_DatePicker1"
-                                    value="{materialModel>ValidTo}"
-                                    valueFormat="yyyy-MM-dd"
-                                    displayFormat="dd-MM-yyyy"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column13">
-                            <Label
-                                id="CreatePriceCondition_Page_Label17"
-                                text="Deletion"
-                            />
-                            <u:template>
-                                <CheckBox
-                                    id="CreatePriceCondition_Page_CheckBox"
-                                    selected="{materialModel>Deletion}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column14">
-                            <Label
-                                id="CreatePriceCondition_Page_Label18"
-                                text="Condition Supplement"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input10"
-                                    value="{materialModel>ConditionSupplement}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column15">
-                            <Label
-                                id="CreatePriceCondition_Page_Label19"
-                                text="Scales"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input11"
-                                    value="{materialModel>Scales}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column16">
-                            <Label
-                                id="CreatePriceCondition_Page_Label20"
-                                text="Texts"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input12"
-                                    value="{materialModel>Texts}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column17">
-                            <Label
-                                id="CreatePriceCondition_Page_Label21"
-                                text="Exclusion"
-                            />
-                            <u:template>
-                                <CheckBox
-                                    id="CreatePriceCondition_Page_CheckBox1"
-                                    selected="{materialModel>Exclusion}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column18">
-                            <Label
-                                id="CreatePriceCondition_Page_Label22"
-                                text="Payment Terms"
-                            />
-                            <u:template>
-                                <Input
-                                    id="CreatePriceCondition_Page_Input13"
-                                    value="{materialModel>PaymentTerms}"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column19">
-                            <Label
-                                id="CreatePriceCondition_Page_Label23"
-                                text="Fixed Value Date"
-                            />
-                            <u:template>
-                                <DatePicker
-                                    id="CreatePriceCondition_Page_DatePicker2"
-                                    value="{materialModel>FixedValueDate}"
-                                    valueFormat="yyyy-MM-dd"
-                                    displayFormat="dd-MM-yyyy"
-                                />
-                            </u:template>
-                        </u:Column>
-                        <u:Column id="CreatePriceCondition_Page_Column20">
-                            <Label
-                                id="CreatePriceCondition_Page_Label24"
-                                text="Additional Value Date"
-                            />
-                            <u:template>
-                                <DatePicker
-                                    id="CreatePriceCondition_Page_DatePicker3"
-                                    value="{materialModel>AdditionalValueDate}"
-                                    valueFormat="yyyy-MM-dd"
-                                    displayFormat="dd-MM-yyyy"
-                                />
-                            </u:template>
-                        </u:Column> -->
+                    
                     </u:columns>
                 </u:Table>
             </VBox>
@@ -1122,14 +885,14 @@
                 <Button
                     id="CreatePriceCondition_Page_Button_Save"
                     text="Save"
-                    press="page_createPriceConditions_save"
+                    press="onSave"
                     type="Emphasized"
                     visible="{viewModel>/showVBox}"
                 />
                 <Button
                     id="CreatePriceCondition_Page_Button_Cancel"
                     text="Cancel"
-                    press="page_createPriceConditions_cancel"
+                    press="onCancel"
                     visible="{viewModel>/showVBox}"
                 />
             </OverflowToolbar>
