@@ -15,7 +15,7 @@
         title="Create Price Condition"
         showNavButton="true"
         navButtonTooltip="Back"
-        navButtonPress="page_createPriceConditions_navigateBack"
+        navButtonPress="navBack"
     >
         <content>
             <VBox
@@ -275,13 +275,13 @@
                             <Button
                                 id="CreatePriceCondition_Page_Button_AddRow"
                                 icon="sap-icon://add"
-                                press="page_createPriceConditions_addRow"
+                                press="onAddRow"
                                 enabled="{viewModel>/addrowbtn}"
                             />
                             <Button
                                 id="CreatePriceCondition_Page_Button_DeleteRow"
                                 icon="sap-icon://delete"
-                                press="page_createPriceConditions_Delete"
+                                press="onDeleteRow"
                             />
                         </OverflowToolbar>
                     </u:extension>

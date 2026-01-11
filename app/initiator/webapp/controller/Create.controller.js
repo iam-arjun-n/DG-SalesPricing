@@ -113,7 +113,7 @@ sap.ui.define([
                     var oTableModel = this.getView().getModel("materialModel");
                     oTableModel.setProperty("/items", []);
                     oTableModel.getProperty("/items").push(
-                        this._createEmptyRowForKeyCombination()
+                        this._createEmptyRow()
                     );
                     oTableModel.refresh(true);
 
@@ -124,7 +124,7 @@ sap.ui.define([
             }
         },
 
-        _createEmptyRowForKeyCombination: function () {
+        _createEmptyRow: function () {
             var oRow = {};
 
             if (!this._activeKeyCombination || !this._activeKeyCombination.fields) {
@@ -141,11 +141,11 @@ sap.ui.define([
             return oRow;
         },
 
-        page_createPriceConditions_addRow: function () {
+        onAddRow: function () {
             var oTableModel = this.getView().getModel("materialModel");
             var aItems = oTableModel.getProperty("/items");
 
-            aItems.push(this._createEmptyRowForKeyCombination());
+            aItems.push(this._createEmptyRow());
             oTableModel.refresh(true);
         },
 
@@ -153,13 +153,13 @@ sap.ui.define([
             this.getOwnerComponent().getRouter().navTo(sRoute);
         },
 
-        page_createPriceConditions_navigateBack: function () {
+        navBack: function () {
             this.getOwnerComponent().getRouter().navTo("RouteSubmission", {
                 request_type: "create"
             });
         },
 
-        page_createPriceConditions_Delete: function () {
+        onDeleteRow: function () {
             var oTable = this.byId("CreatePriceCondition_Page_Table");
             var oModel = this.getView().getModel("materialModel");
             var aData = oModel.getProperty("/items");
@@ -181,5 +181,9 @@ sap.ui.define([
                 }
             });
         }
+
+        //F4 Helper Functions
+
+        //F4 Main Functions
     });
 });
