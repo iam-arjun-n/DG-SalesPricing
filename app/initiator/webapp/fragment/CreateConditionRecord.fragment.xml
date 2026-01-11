@@ -14,12 +14,9 @@
                 id="CCR_Fragment_Input"
                 showValueHelp="true"
                 showSuggestion="true"
-                valueHelpRequest=".onConditionTypeValueHelp"
-                suggest=".onConditionTypeSuggest"
-                liveChange=".onConditionTypeLiveChange"   
-                suggestionItems="{
-                    path: '/ZI_CONDITIONTYPETEXT'
-                }"
+                valueHelpRequest="onF4_Field_ConditionType"
+                suggest=""
+                liveChange=""   
             >
                 <suggestionItems>
                     <core:ListItem
