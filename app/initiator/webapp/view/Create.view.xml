@@ -301,6 +301,7 @@
                         <u:Column
                             id="Column_Material"
                             visible="{viewModel>/Column_Material/visible}"
+                            width="5rem"
                         >
                             <Label
                                 id="Column_Label_Material"
@@ -317,6 +318,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Material_Group"
+                            width="12rem"
                             visible="{viewModel>/Column_Material_Group/visible}"
                         >
                             <Label
@@ -334,6 +336,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Customer"
+                            width="5rem"
                             visible="{viewModel>/Column_Customer/visible}"
                         >
                             <Label
@@ -351,6 +354,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Plant"
+                            width="8rem"
                             visible="{viewModel>/Column_Plant/visible}"
                         >
                             <Label
@@ -368,6 +372,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Status"
+                            width="4rem"
                             visible="{viewModel>/Column_Status/visible}"
                         >
                             <Label
@@ -385,6 +390,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Price_Group"
+                            width="6rem"
                             visible="{viewModel>/Column_Price_Group/visible}"
                         >
                             <Label
@@ -402,6 +408,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Departure_City_Region"
+                            width="7rem"
                             visible="{viewModel>/Column_Departure_City_Region/visible}"
                         >
                             <Label
@@ -419,6 +426,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Tax_Class_Customer"
+                            width="8rem"
                             visible="{viewModel>/Column_Tax_Class_Customer/visible}"
                         >
                             <Label
@@ -436,11 +444,12 @@
                         </u:Column>
                         <u:Column
                             id="Column_Tax_Class_Material"
+                            width="8rem"
                             visible="{viewModel>/Column_Tax_Class_Material/visible}"
                         >
                             <Label
                                 id="Column_Label_Tax_Class_Material"
-                                text="Tax_Class_Material"
+                                text="Tax Class Material"
                                 visible="{viewModel>/Column_Tax_Class_Material/visible}"
                             />
                             <u:template>
@@ -453,6 +462,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Description"
+                            width="6rem"
                             visible="{viewModel>/Column_Description/visible}"
                         >
                             <Label
@@ -470,6 +480,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Processing_Status"
+                            width="8rem"
                             visible="{viewModel>/Column_Processing_Status/visible}"
                         >
                             <Label
@@ -487,12 +498,13 @@
                         </u:Column>
                         <u:Column
                             id="Column_Partner_Role"
+                            width="8rem"
                             visible="{viewModel>/Column_Partner_Role/visible}"
                         >
                             <Label
                                 id="Column_Label_Partner_Role"
                                 text="Partner Role"
-                                visible="{viewModel>/Column_Amount/visible}"
+                                visible="{viewModel>/Column_Partner_Role/visible}"
                             />
                             <u:template>
                                 <Input
@@ -504,6 +516,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Amount"
+                            width="5rem"
                             visible="{viewModel>/Column_Amount/visible}"
                         >
                             <Label
@@ -521,6 +534,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Unit"
+                            width="3rem"
                             visible="{viewModel>/Column_Unit/visible}"
                         >
                             <Label
@@ -538,6 +552,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Pricing_Unit"
+                            width="6rem"
                             visible="{viewModel>/Column_Pricing_Unit/visible}"
                         >
                             <Label
@@ -555,6 +570,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_UoM"
+                            width="3rem"
                             visible="{viewModel>/Column_UoM/visible}"
                         >
                             <Label
@@ -572,6 +588,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Calculation_Type"
+                            width="8rem"
                             visible="{viewModel>/Column_Calculation_Type/visible}"
                         >
                             <Label
@@ -589,6 +606,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Scale_Base_Type"
+                            width="8rem"
                             visible="{viewModel>/Column_Scale_Base_Type/visible}"
                         >
                             <Label
@@ -606,6 +624,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Valid_From"
+                            width="8rem"
                             visible="{viewModel>/Column_Valid_From/visible}"
                         >
                             <Label
@@ -625,6 +644,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Valid_To"
+                            width="8rem"
                             visible="{viewModel>/Column_Valid_To/visible}"
                         >
                             <Label
@@ -644,6 +664,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Deletion"
+                            width="3rem"
                             visible="{viewModel>/Column_Deletion/visible}"
                         >
                             <Label
@@ -661,6 +682,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Condition_Supplement"
+                            width="3rem"
                             visible="{viewModel>/Column_Condition_Supplement/visible}"
                         >
                             <Label
@@ -678,6 +700,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Scales"
+                            width="3rem"
                             visible="{viewModel>/Column_Scales/visible}"
                         >
                             <Label
@@ -695,6 +718,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Texts"
+                            width="3rem"
                             visible="{viewModel>/Column_Texts/visible}"
                         >
                             <Label
@@ -712,6 +736,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Exclusion"
+                            width="5rem"
                             visible="{viewModel>/Column_Exclusion/visible}"
                         >
                             <Label
@@ -729,6 +754,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Payment_Terms"
+                            width="7rem"
                             visible="{viewModel>/Column_Payment_Terms/visible}"
                         >
                             <Label
@@ -746,6 +772,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Fixed_Value_Date"
+                            width="8rem"
                             visible="{viewModel>/Column_Fixed_Value_Date/visible}"
                         >
                             <Label
@@ -763,6 +790,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Additional_Value_Days"
+                            width="10rem"
                             visible="{viewModel>/Column_Additional_Value_Days/visible}"
                         >
                             <Label
@@ -780,6 +808,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Tax_Code"
+                            width="6rem"
                             visible="{viewModel>/Column_Tax_Code/visible}"
                         >
                             <Label
@@ -797,6 +826,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Withholding_Tax_Code"
+                            width="10rem"
                             visible="{viewModel>/Column_Withholding_Tax_Code/visible}"
                         >
                             <Label
@@ -814,6 +844,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Licence_No"
+                            width="6rem"
                             visible="{viewModel>/Column_Licence_No/visible}"
                         >
                             <Label
@@ -831,6 +862,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Licence_Date"
+                            width="8rem"
                             visible="{viewModel>/Column_Licence_Date/visible}"
                         >
                             <Label
@@ -850,6 +882,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_Deletion_Indictor"
+                            width="3rem"
                             visible="{viewModel>/Column_Deletion_Indictor/visible}"
                         >
                             <Label
