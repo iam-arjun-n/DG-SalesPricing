@@ -27,6 +27,10 @@ sap.ui.define([
         conditionType: "",
         keyCombinationId: ""
       };
+
+      //Comment Model
+      var oCommentModel = new sap.ui.model.json.JSONModel([]);
+      this.getView().setModel(oCommentModel, "commentModel");
     },
 
     navigateTo: function (view, data) {
@@ -293,6 +297,33 @@ sap.ui.define([
           );
         }
       });
+    },
+
+    //Comment
+    onPost: function (oEvent) {
+      var oFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({ style: "medium" });
+      var oComments = this.getView().getModel("commentModel");
+      var oDate = new Date();
+      var sDate = oFormat.format(oDate);
+
+      var sValue = oEvent.getParameter("value");
+      if (!sValue || !sValue.trim()) {
+        sap.m.MessageToast.show("Comment cannot be empty.");
+        return;
+      }
+
+      var aComments = oComments.getData();
+
+      var oEntry = {
+        UserName: this.getOwnerComponent().currentUser,
+        Date: sDate,
+        Text: sValue
+      };
+
+      aComments.unshift(oEntry);
+      oComments.setData(aComments);
+
+      oEvent.getSource().setValue("");
     },
 
 

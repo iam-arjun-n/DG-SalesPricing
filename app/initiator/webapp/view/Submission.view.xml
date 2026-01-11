@@ -101,29 +101,59 @@
                     </headerToolbar>
                     <columns>
                         <Column id="Create_Page_Column">
-                            <Text id="Create_Page_Text1" text="Text 1"/>
+                            <Text
+                                id="Create_Page_Text1"
+                                text="Text 1"
+                            />
                         </Column>
                         <Column id="Create_Page_Column1">
-                            <Text id="Create_Page_Text2" text="Text 2"/>
+                            <Text
+                                id="Create_Page_Text2"
+                                text="Text 2"
+                            />
                         </Column>
                         <Column id="Create_Page_Column2">
-                            <Text id="Create_Page_Text3" text="Text 3"/>
+                            <Text
+                                id="Create_Page_Text3"
+                                text="Text 3"
+                            />
                         </Column>
                         <Column id="Create_Page_Column3">
-                            <Text id="Create_Page_Text4" text="Text 4"/>
+                            <Text
+                                id="Create_Page_Text4"
+                                text="Text 4"
+                            />
                         </Column>
                         <Column id="Create_Page_Column4">
-                            <Text id="Create_Page_Text5" text="Text 5"/>
+                            <Text
+                                id="Create_Page_Text5"
+                                text="Text 5"
+                            />
                         </Column>
                     </columns>
                     <items>
                         <ColumnListItem id="Create_Page_ColumnListItem">
                             <cells>
-                                <Text id="Create_Page_Text6" text="{col1}" />
-                                <Text id="Create_Page_Text7" text="{col2}" />
-                                <Text id="Create_Page_Text8" text="{col3}" />
-                                <Text id="Create_Page_Text9" text="{col4}" />
-                                <Text id="Create_Page_Text10" text="{col5}" />
+                                <Text
+                                    id="Create_Page_Text6"
+                                    text="{col1}"
+                                />
+                                <Text
+                                    id="Create_Page_Text7"
+                                    text="{col2}"
+                                />
+                                <Text
+                                    id="Create_Page_Text8"
+                                    text="{col3}"
+                                />
+                                <Text
+                                    id="Create_Page_Text9"
+                                    text="{col4}"
+                                />
+                                <Text
+                                    id="Create_Page_Text10"
+                                    text="{col5}"
+                                />
                             </cells>
                         </ColumnListItem>
                     </items>
@@ -131,26 +161,29 @@
             </Panel>
 
             <Panel
-                id="Create_Page_Panel_Comments"
-                expanded="true"
-                expandable="true"
                 headerText="Comments"
-                width="auto"
+                expandable="true"
+                expanded="true"
                 class="sapUiResponsiveMargin"
             >
                 <content>
                     <FeedInput
-                        id="Create_Page_FeedInput"
-                        post="onCommentPost"
-                        class="sapUiSmallMarginTopBottom"
-                        maxLength="100"
-                        placeholder="Add a comment - Character length limited to 100"
+                        post="onPost"
+                        maxLength="500"
+                        placeholder="Add a comment - Character length limited to 500"
                         icon="sap-icon://comment"
                         rows="1"
                     />
-                    <Image id="Create_Page_Image" src="" width=""/>
-                    <List showSeparators="Inner" id="Create_Page_List">
-                        <FeedListItem id="fliComment" sender="" timestamp="" text=""/>
+
+                    <List
+                        items="{commentModel>/}"
+                        showSeparators="Inner"
+                    >
+                        <FeedListItem
+                            sender="{commentModel>UserName}"
+                            timestamp="{commentModel>Date}"
+                            text="{commentModel>Text}"
+                        />
                     </List>
                 </content>
             </Panel>
