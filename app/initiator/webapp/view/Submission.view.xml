@@ -8,7 +8,7 @@
 >
     <Page
         id="Create"
-        title="Condition Records Create"
+        title="Condition Records - {RequestModel>/requestType}"
         showNavButton="true"
         navButtonPress="navBack"
         backgroundDesign="Solid"
@@ -23,7 +23,7 @@
                 class="sapUiResponsiveMargin"
             >
                 <Table
-                    id="Create_Page_Table"
+                    id="Submission_Table"
                     inset="false"
                     noDataText="No Data. Use 'Upload' or 'Add new' for adding records"
                     selectionChange="onSelectionChange"
@@ -33,101 +33,58 @@
                         path: 'submissionModel>/rows'
                     }"
                 >
+                    
                     <headerToolbar>
-                        <OverflowToolbar
-                            id="Create_Page_OverflowToolbar"
-                            width="100%"
-                        >
-                            <content>
-                                <sap.ui.unified:FileUploader
-                                    xmlns:sap.ui.unified="sap.ui.unified"
-                                    id="fileUploader"
-                                    sameFilenameAllowed="true"
-                                    iconOnly="false"
-                                    buttonOnly="true"
-                                    fileType="XLSX,xlsx"
-                                    icon="sap-icon://upload"
-                                    iconFirst="true"
-                                    style="Emphasized"
-                                    change="uploadFile"
-                                    visible="true"
-                                    buttonText="Upload"
-                                />
-                                <Button
-                                    id="Create_Page_Button_Download_Template"
-                                    type="Default"
-                                    text="Download Template"
-                                    iconFirst="true"
-                                    icon="sap-icon://download"
-                                    press=""
-                                />
-                                <ToolbarSpacer id="Create_Page_ToolbarSpacer" />
-                                <Button
-                                    id="Create_Page_Button_Edit"
-                                    type="Default"
-                                    text="Edit"
-                                    iconFirst="true"
-                                    icon="sap-icon://edit"
-                                    enabled="false"
-                                    press=""
-                                />
-                                <Button
-                                    id="Create_Page_Button_Add_New"
-                                    type="Default"
-                                    text="Add New"
-                                    iconFirst="true"
-                                    icon="sap-icon://add"
-                                    press="onAddNew"
-                                />
-                                <Button
-                                    id="Create_Page_Button_Delete"
-                                    type="Default"
-                                    text="Delete"
-                                    iconFirst="true"
-                                    icon="sap-icon://delete"
-                                    enabled="false"
-                                    press=""
-                                />
-                                <Button
-                                    id="Create_Page_Button_Export"
-                                    type="Default"
-                                    text="Export"
-                                    iconFirst="true"
-                                    icon="sap-icon://excel-attachment"
-                                    press=""
-                                />
-                            </content>
-                        </OverflowToolbar>
-                    </headerToolbar>
+                            <OverflowToolbar width="100%" id="Submission_Toolbar1">
+                                <content>
+                                    <OverflowToolbar id="Submission_Header1" width="100%">
+                                        <content>
+                                            <sap.ui.unified:FileUploader xmlns:sap.ui.unified="sap.ui.unified" id="Submission_FileUploader" buttonText="Upload" sameFilenameAllowed="true" 
+                                                iconOnly="false" buttonOnly="true" fileType="XLSX,xlsx" icon="sap-icon://upload" iconFirst="true" style="Emphasized" 
+                                                change="onExcelUpload" visible="false" />
+                                            <Button id="Submission_Button_Export" text="Download Template" icon="sap-icon://download" type="Default" press="onDownloadTemplate"/>
+                                            <ToolbarSpacer id="Submission_Header2" />
+                                            <Button id="Submission_Button_View" text="View" icon="sap-icon://detail-view" press="onView" enabled="false" />
+                                            <Button id="Submission_Button_ChangeLog" text="View Change logs" icon="sap-icon://notes" press="viewChangeLogs" enabled="false" />
+                                            <Button text="Edit" id="Submission_Button_Edit" icon="sap-icon://edit" press="onEdit" enabled="false"/>
+                                            <Button text="Add New" id="Submission_Button_Add" icon="sap-icon://add" press="onAddNew" />
+                                            <Button text="Copy from Cost Center" id="Submission_Button_AddFromRef" icon="sap-icon://copy" press="copyFromExistingData"/>
+                                            <Button text="Delete" id="Submission_Button_Delete" icon="sap-icon://delete" press="onDelete" enabled="false"/>
+                                            <Button id="Submission_Button_ExportAtt" icon="sap-icon://excel-attachment" text="Export" press="onExport" visible="false" />
+                                        </content>
+                                    </OverflowToolbar>
+                                </content>
+                            </OverflowToolbar>
+                        </headerToolbar>
                     <columns>
-                        <Column><Text text="Condition Type"/></Column>
-    <Column><Text text="Sales Organization"/></Column>
-    <Column><Text text="Distribution Channel"/></Column>
-    <Column><Text text="Customer"/></Column>
-    <Column><Text text="Material"/></Column>
+                        <Column id="Submission_Column_ConditionType"><Text id="_IDGenText" text="Condition Type"/></Column>
+    <Column id="Submission_Column_SalesOrg"><Text id="_IDGenText1" text="Sales Organization"/></Column>
+    <Column id="Submission_Column_DistChan"><Text id="_IDGenText2" text="Distribution Channel"/></Column>
+    <Column id="Submission_Column_Customer"><Text id="_IDGenText3" text="Customer"/></Column>
+    <Column id="Submission_Column_Material"><Text id="_IDGenText4" text="Material"/></Column>
                     </columns>
                     <items>
                         <ColumnListItem id="Create_Page_ColumnListItem">
                             <cells>
-        <Text text="{submissionModel>Display/ConditionType}"/>
-        <Text text="{submissionModel>Display/SalesOrganization}"/>
-        <Text text="{submissionModel>Display/DistributionChannel}"/>
-        <Text text="{submissionModel>Display/Customer}"/>
-        <Text text="{submissionModel>Display/Material}"/>
+        <Text id="_IDGenText5" text="{submissionModel>Display/ConditionType}"/>
+        <Text id="_IDGenText6" text="{submissionModel>Display/SalesOrganization}"/>
+        <Text id="_IDGenText7" text="{submissionModel>Display/DistributionChannel}"/>
+        <Text id="_IDGenText8" text="{submissionModel>Display/Customer}"/>
+        <Text id="_IDGenText9" text="{submissionModel>Display/Material}"/>
       </cells>
                         </ColumnListItem>
                     </items>
                 </Table>
             </Panel>
 
-            <Panel
+            <Panel id="_IDGenPanel"
                 headerText="Comments"
                 expandable="true"
                 expanded="true"
                 class="sapUiResponsiveMargin"
             >
                 <content>
-                    <FeedInput
+                    <FeedInput id="_IDGenFeedInput"
                         post="onPost"
                         maxLength="500"
                         placeholder="Add a comment - Character length limited to 500"
@@ -135,11 +92,11 @@
                         rows="1"
                     />
 
-                    <List
+                    <List id="_IDGenList"
                         items="{commentModel>/}"
                         showSeparators="Inner"
                     >
-                        <FeedListItem
+                        <FeedListItem id="_IDGenFeedListItem"
                             sender="{commentModel>UserName}"
                             timestamp="{commentModel>Date}"
                             text="{commentModel>Text}"

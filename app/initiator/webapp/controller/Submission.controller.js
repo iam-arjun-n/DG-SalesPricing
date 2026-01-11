@@ -20,7 +20,7 @@ sap.ui.define([
       // Local JSON model for table
       var oLocalModel = new JSONModel({ records: [] });
       this.getView().setModel(oLocalModel, "local");
-      this.getView().byId("Create_Page_Table").setModel(oLocalModel);
+      this.getView().byId("Submission_Table").setModel(oLocalModel);
 
       // Selected data
       this._selectedData = {
@@ -31,6 +31,125 @@ sap.ui.define([
       //Comment Model
       var oCommentModel = new sap.ui.model.json.JSONModel([]);
       this.getView().setModel(oCommentModel, "commentModel");
+      var oView = this.getView();
+      var oRequestModel = new sap.ui.model.json.JSONModel({
+        requestId: "",
+        requestType: "",
+        workflowStatus: "",
+        requestStatus: "",
+        createdByName: "",
+        salesPricingData: []
+      });
+      oView.setModel(oRequestModel, "RequestModel");
+
+      sap.ui.core.UIComponent.getRouterFor(this)
+        .getRoute("RouteSubmission")
+        .attachPatternMatched(this._onRouteMatched, this);
+    },
+
+    _onRouteMatched: function (oEvent) {
+      var args = oEvent.getParameter("arguments");
+      var sType = args.request_type || "create";
+      var sReqId = args.request_id;
+      var sFormatted = sType.charAt(0).toUpperCase() + sType.slice(1);
+
+      this.getView().getModel("RequestModel").setProperty("/requestType", sFormatted);
+      this._applyVisibility(sFormatted);
+      if (sType === "view" && sReqId) {
+        this._loadRequestFromCAP(sReqId);
+        return;
+      }
+      this.getUserInfo().then((u) => {
+
+        this.getView().getModel("RequestModel").setProperty("/createdByName", u.displayName || u.email || u.name || u);
+      }).catch(() => {
+      });
+
+      if (args.ca && args.cc && args.ve) {
+        this._loadSAPCostCenter(args.ca, args.cc, args.ve);
+      }
+    },
+    _applyVisibility: function (sType) {
+      var oView = this.getView();
+
+      var config = {
+        Create: {
+          columns: ["Submission_Column_ConditionType", "Submission_Column_SalesOrg", "Submission_Column_DistChan", "Submission_Column_Customer"],
+          buttons: [
+            "Submission_Button_Add", "Submission_Button_Delete",
+            "Submission_Button_Edit", "Submission_Button_View",
+            "Submission_Button_Send", "Submission_Button_Duplicatecheck",
+            "Submission_FileUploader", "Submission_Button_Export"
+          ]
+        },
+        Change: {
+          columns: [
+            "Submission_Column_SalesOrg", "Submission_Column_DistChan",
+            "Submission_Column_Customer", "Submission_Column_Material"
+          ],
+          buttons: [
+            "Submission_Button_Edit", "Submission_Button_View",
+            "Submission_Button_ChangeLog", "Submission_Button_Send"
+          ]
+        },
+        Extend: {
+          columns: [
+            "Submission_Column_SalesOrg", "Submission_Column_DistChan",
+            "Submission_Column_Customer", "Submission_Column_Material"
+          ],
+          buttons: [
+            "Submission_Button_Edit", "Submission_Button_View",
+            "Submission_Button_Send"
+          ]
+        },
+        View: {
+          columns: [
+            "Submission_Column_ConditionType",
+            "Submission_Column_SalesOrg",
+            "Submission_Column_DistChan",
+            "Submission_Column_Customer",
+          ],
+          buttons: [
+            "Submission_Button_View"
+          ]
+        }
+      };
+
+      var allColumns = [
+        "Submission_Column_ConditionType", "Submission_Column_SalesOrg",
+        "Submission_Column_DistChan", "Submission_Column_Customer",
+        "Submission_Column_Material"
+      ];
+
+      var allButtons = [
+        "Submission_Button_Add", "Submission_Button_AddFromRef",
+        "Submission_Button_Edit", "Submission_Button_Delete",
+        "Submission_Button_View", "Submission_Button_ChangeLog",
+        "Submission_Button_Send", "Submission_Button_Duplicatecheck",
+        "Submission_Button_Validate", "Submission_FileUploader",
+        "Submission_Button_Export"
+      ];
+
+      allColumns.concat(allButtons).forEach(function (id) {
+        var ctrl = oView.byId(id);
+        if (ctrl && ctrl.setVisible) {
+          ctrl.setVisible(false);
+        }
+      });
+
+      (config[sType] && config[sType].columns || []).forEach(function (id) {
+        var ctrl = oView.byId(id);
+        if (ctrl && ctrl.setVisible) {
+          ctrl.setVisible(true);
+        }
+      });
+
+      (config[sType] && config[sType].buttons || []).forEach(function (id) {
+        var ctrl = oView.byId(id);
+        if (ctrl && ctrl.setVisible) {
+          ctrl.setVisible(true);
+        }
+      });
     },
 
     navigateTo: function (view, data) {
@@ -99,6 +218,8 @@ sap.ui.define([
         this._dialog_createConditionRecord.open();
       }
     },
+
+    
 
     dialog_createConditionRecord_submit: async function () {
       const oView = this.getView();
