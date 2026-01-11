@@ -255,7 +255,7 @@ sap.ui.define([
             this._F4Dialog.close();
         },
 
-        //F4 Main Functions
+        //F4 Main Functions For Field
         onF4_Field_SalesOrganization: function (oEvent) {
             sap.ui.core.BusyIndicator.show();
 
@@ -459,6 +459,40 @@ sap.ui.define([
                 }
             });
         },
+
+        onF4_Field_DocumentCurrency: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+            var oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+            var sEntitySet = "/I_Altvcurrency";
+
+            oModel.read(sEntitySet, {
+                success: function (oData) {
+                    var aResults = oData.results.map(function (item) {
+                        return {
+                            title: item.Currency,                  // EUR
+                            description: item.AlternativeCurrencyKey || item.CurrencyISOCode || ""
+                        };
+                    });
+                    var oF4Model = new sap.ui.model.json.JSONModel({
+                        results: aResults
+                    });
+
+                    this.getView().setModel(oF4Model, "F4Model");
+                    this._openF4Dialog("Document Currency");
+
+                    sap.ui.core.BusyIndicator.hide();
+                }.bind(this),
+
+                error: function (oError) {
+                    sap.ui.core.BusyIndicator.hide();
+                    sap.m.MessageBox.error(
+                        "Failed to load Document Currency value help"
+                    );
+                }
+            });
+        },
+
 
     });
 });
