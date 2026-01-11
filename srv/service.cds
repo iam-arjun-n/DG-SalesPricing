@@ -1,6 +1,6 @@
 using com.deloitte.mdg.sales.pricing as db from '../db/data-model';
 
-service MaterialService {
-  entity SalesRequestItems as projection on db.SalesRequestItems;
-  entity ConditionRecords   as projection on db.ConditionRecords;
+service SalePricingService {
+  entity SalesPricingRequests as projection on db.SalesPricingRequests;
+  entity SalesPricingComments as projection on db.SalesPricingComments;
 }
