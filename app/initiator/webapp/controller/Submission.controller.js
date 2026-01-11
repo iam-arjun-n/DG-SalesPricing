@@ -43,7 +43,43 @@ sap.ui.define([
     },
 
     navBack: function () {
+      this._clearAllModels();
       this.navigateTo("RouteOverview");
+    },
+
+    _clearAllModels: function () {
+      const oView = this.getView();
+      const oSubmissionModel = oView.getModel("submissionModel");
+      if (oSubmissionModel) {
+        oSubmissionModel.setData({
+          rows: [],
+          Display: {},
+          Data: {}
+        });
+        oSubmissionModel.refresh(true);
+      }
+
+      const oLocalModel = oView.getModel("local");
+      if (oLocalModel) {
+        oLocalModel.setData({ records: [] });
+        oLocalModel.refresh(true);
+      }
+
+      const oCommentModel = oView.getModel("commentModel");
+      if (oCommentModel) {
+        oCommentModel.setData([]);
+        oCommentModel.refresh(true);
+      }
+
+      this._selectedData = {
+        conditionType: "",
+        keyCombinationId: ""
+      };
+
+      const oTable = oView.byId("Create_Page_Table");
+      if (oTable) {
+        oTable.removeSelections(true);
+      }
     },
 
 
