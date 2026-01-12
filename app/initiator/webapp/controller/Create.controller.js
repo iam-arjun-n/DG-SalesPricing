@@ -161,11 +161,24 @@ sap.ui.define([
             if (!this._activeKeyCombination || !this._activeKeyCombination.fields) {
                 return oRow;
             }
+            const oToday = new Date();
+            const sToday = oToday.toISOString().split("T")[0];
+
+            // Max valid-to date
+            const sMaxDate = "9999-12-31";
+
 
             this._activeKeyCombination.fields.forEach(function (f) {
                 if (f.startsWith("Column_")) {
                     var sProp = f.replace("Column_", "");
-                    oRow[sProp] = "";
+
+                    if (sProp === "Valid_From") {
+                        oRow[sProp] = sToday;
+                    } else if (sProp === "Valid_To") {
+                        oRow[sProp] = sMaxDate;
+                    } else {
+                        oRow[sProp] = "";
+                    }
                 }
             });
 
@@ -525,6 +538,127 @@ sap.ui.define([
             });
         },
 
+
+        //F4 Main Function For Columns
+        onF4_Column_Material: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+
+            oModel.read("/I_MaterialStdVH", {
+                success: (oData) => {
+                    const data = oData.results.map(i => ({
+                        title: i.Material,
+                        description: i.Material_Text
+                    }));
+
+                    this.getView().setModel(new JSONModel({ results: data }), "F4Model");
+                    this._openF4Dialog("Material");
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: () => {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Failed to load Material");
+                }
+            });
+        },
+
+        onF4_Column_MaterialGroup: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+
+            oModel.read("/I_MaterialGroup", {
+                success: (oData) => {
+                    const data = oData.results.map(i => ({
+                        title: i.MaterialGroup,
+                        description: i.MaterialGroup_Text
+                    }));
+
+                    this.getView().setModel(new JSONModel({ results: data }), "F4Model");
+                    this._openF4Dialog("Material Group");
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: () => {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Failed to load Material Group");
+                }
+            });
+        },
+
+        onF4_Column_Customer: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+
+            oModel.read("/I_Customer_VH", {
+                success: (oData) => {
+                    const data = oData.results.map(i => ({
+                        title: i.Customer,
+                        description: i.CustomerName
+                    }));
+
+                    this.getView().setModel(new JSONModel({ results: data }), "F4Model");
+                    this._openF4Dialog("Customer");
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: () => {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Failed to load Customer");
+                }
+            });
+        },
+
+        onF4_Column_Plant: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+
+            oModel.read("/I_Plant", {
+                success: (oData) => {
+                    const data = oData.results.map(i => ({
+                        title: i.Plant,
+                        description: i.PlantName
+                    }));
+
+                    this.getView().setModel(new JSONModel({ results: data }), "F4Model");
+                    this._openF4Dialog("Customer");
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: () => {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Failed to load Customer");
+                }
+            });
+        },
+
+        onF4_Column_UoM: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+
+            const oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+
+            oModel.read("/I_UnitOfMeasure", {
+                success: (oData) => {
+                    const data = oData.results.map(i => ({
+                        title: i.UnitOfMeasure,
+                        description: i.UnitOfMeasure_Text
+                    }));
+
+                    this.getView().setModel(new JSONModel({ results: data }), "F4Model");
+                    this._openF4Dialog("Customer");
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: () => {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Failed to load Customer");
+                }
+            });
+        },
 
         // Suggestion Function
         onSuggestSalesOrganization: function () { },

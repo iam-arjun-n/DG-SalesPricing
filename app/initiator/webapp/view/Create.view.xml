@@ -312,6 +312,8 @@
                                 <Input
                                     id="Column_Input_Material"
                                     value="{columnModel>Material}"
+                                    showValueHelp="true"
+                                    valueHelpRequest="onF4_Column_Material"
                                     visible="{viewModel>/Column_Material/visible}"
                                 />
                             </u:template>
@@ -330,6 +332,8 @@
                                 <Input
                                     id="Column_Input_Material_Group"
                                     value="{columnModel>Material_Group}"
+                                    showValueHelp="true"
+                                    valueHelpRequest="onF4_Column_MaterialGroup"
                                     visible="{viewModel>/Column_Material_Group/visible}"
                                 />
                             </u:template>
@@ -348,6 +352,8 @@
                                 <Input
                                     id="Column_Input_Customer"
                                     value="{columnModel>Customer}"
+                                    showValueHelp="true"
+                                    valueHelpRequest="onF4_Column_Customer"
                                     visible="{viewModel>/Column_Customer/visible}"
                                 />
                             </u:template>
@@ -366,6 +372,8 @@
                                 <Input
                                     id="Column_Input_Plant"
                                     value="{columnModel>Plant}"
+                                    showValueHelp="true"
+                                    valueHelpRequest="onF4_Column_Plant"
                                     visible="{viewModel>/Column_Plant/visible}"
                                 />
                             </u:template>
@@ -570,7 +578,7 @@
                         </u:Column>
                         <u:Column
                             id="Column_UoM"
-                            width="3rem"
+                            width="5rem"
                             visible="{viewModel>/Column_UoM/visible}"
                         >
                             <Label
@@ -582,6 +590,8 @@
                                 <Input
                                     id="Column_Input_UoM"
                                     value="{columnModel>UoM}"
+                                    showValueHelp="true"
+                                    valueHelpRequest="onF4_Column_UoM"
                                     visible="{viewModel>/Column_UoM/visible}"
                                 />
                             </u:template>
@@ -638,6 +648,8 @@
                                     value="{columnModel>Valid_From}"
                                     valueFormat="yyyy-MM-dd"
                                     displayFormat="dd-MM-yyyy"
+                                    editable="false"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Valid_From/visible}"
                                 />
                             </u:template>
@@ -658,6 +670,8 @@
                                     value="{columnModel>Valid_To}"
                                     valueFormat="yyyy-MM-dd"
                                     displayFormat="dd-MM-yyyy"
+                                    editable="false"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Valid_To/visible}"
                                 />
                             </u:template>
