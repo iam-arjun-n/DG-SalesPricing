@@ -649,7 +649,6 @@
                                     valueFormat="yyyy-MM-dd"
                                     displayFormat="dd-MM-yyyy"
                                     editable="false"
-                                    enabled="false"
                                     visible="{viewModel>/Column_Valid_From/visible}"
                                 />
                             </u:template>
@@ -671,7 +670,6 @@
                                     valueFormat="yyyy-MM-dd"
                                     displayFormat="dd-MM-yyyy"
                                     editable="false"
-                                    enabled="false"
                                     visible="{viewModel>/Column_Valid_To/visible}"
                                 />
                             </u:template>
