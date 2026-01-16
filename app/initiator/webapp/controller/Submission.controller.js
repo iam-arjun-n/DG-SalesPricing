@@ -12,27 +12,8 @@ sap.ui.define([
 
   return Controller.extend("com.deloitte.mdg.salepricing.initiator.initiator.controller.Submissison", {
 
-    onInit() {
-      // SAP Model
-      var oModel = this.getOwnerComponent().getModel("SAPSalesModel");
-      this.getView().setModel(oModel);
-
-      // Local JSON model for table
-      var oLocalModel = new JSONModel({ records: [] });
-      this.getView().setModel(oLocalModel, "local");
-      this.getView().byId("Submission_Table").setModel(oLocalModel);
-
-      // Selected data
-      this._selectedData = {
-        conditionType: "",
-        keyCombinationId: ""
-      };
-
-      //Comment Model
-      var oCommentModel = new sap.ui.model.json.JSONModel([]);
-      this.getView().setModel(oCommentModel, "commentModel");
-      var oView = this.getView();
-      var oRequestModel = new sap.ui.model.json.JSONModel({
+    onInit: function () {
+      const oDraftModel = new sap.ui.model.json.JSONModel({
         requestId: "",
         requestType: "",
         workflowStatus: "",
@@ -40,35 +21,124 @@ sap.ui.define([
         createdByName: "",
         salesPricingData: []
       });
-      oView.setModel(oRequestModel, "RequestModel");
+      this.getView().setModel(oDraftModel, "DraftModel");
 
-      sap.ui.core.UIComponent.getRouterFor(this)
+      this.getView().setModel(new JSONModel([]), "commentModel");
+
+      sap.ui.core.UIComponent
+        .getRouterFor(this)
         .getRoute("RouteSubmission")
         .attachPatternMatched(this._onRouteMatched, this);
     },
 
     _onRouteMatched: function (oEvent) {
-      var args = oEvent.getParameter("arguments");
-      var sType = args.request_type || "create";
-      var sReqId = args.request_id;
-      var sFormatted = sType.charAt(0).toUpperCase() + sType.slice(1);
+      const args = oEvent.getParameter("arguments") || {};
+      const sRouteType = args.request_type || "create";
+      const sReqId = args.request_id;
 
-      this.getView().getModel("RequestModel").setProperty("/requestType", sFormatted);
-      this._applyVisibility(sFormatted);
-      if (sType === "view" && sReqId) {
-        this._loadRequestFromCAP(sReqId);
+      const oDraftModel = this.getView().getModel("DraftModel");
+
+      if (sRouteType !== "view") {
+
+        const sFormatted =
+          sRouteType.charAt(0).toUpperCase() + sRouteType.slice(1);
+
+        oDraftModel.setProperty("/requestType", sFormatted);
+
+        this._applyVisibility(sFormatted);
+
+        this.getUserInfo().then(u => {
+          oDraftModel.setProperty(
+            "/createdByName",
+            u.displayName || u.email || u.name || u
+          );
+        });
+
         return;
       }
-      this.getUserInfo().then((u) => {
 
-        this.getView().getModel("RequestModel").setProperty("/createdByName", u.displayName || u.email || u.name || u);
-      }).catch(() => {
-      });
+      if (sRouteType === "view" && sReqId) {
+        this._loadRequestFromCAP(sReqId).then(() => {
 
-      if (args.ca && args.cc && args.ve) {
-        this._loadSAPCostCenter(args.ca, args.cc, args.ve);
+          const oDraft = oDraftModel.getData();
+          let sVisibilityKey = "View";
+
+          if (oDraft.workflowStatus === "Draft") {
+            sVisibilityKey = "Draft_" + oDraft.requestType;
+          }
+
+          this._applyVisibility(sVisibilityKey);
+        });
       }
     },
+
+    _loadRequestFromCAP: function (reqId) {
+      const oModel = this.getOwnerComponent().getModel("ServiceModel");
+
+      const oContext = oModel.bindContext(
+        `/SalesPricingRequests(requestId='${reqId}')`,
+        null,
+        { $expand: "conditionRecords,comments" }
+      );
+
+      return oContext.requestObject().then(oData => {
+
+        const oDraftModel = this.getView().getModel("DraftModel");
+
+        oDraftModel.setData({
+          requestId: oData.requestId,
+          requestType: oData.requestType,
+          workflowStatus: oData.workflowStatus,
+          requestStatus: oData.requestStatus,
+          createdByName: oData.createdByName,
+
+          // IMPORTANT: keep DB structure intact
+          salesPricingData: (oData.conditionRecords || []).map(r => ({
+            ConditionType: r.conditionType,
+            KeyCombinationId: r.keyCombinationId,
+            Fields: JSON.parse(r.fields),
+            Columns: JSON.parse(r.columns)
+          }))
+        });
+
+        // comments → UI model
+        const aComments = (oData.comments || []).map(c => ({
+          UserName: c.createdBy,
+          Date: c.createdAt,
+          Text: c.commentText
+        }));
+
+        this.getView().getModel("commentModel").setData(aComments);
+      });
+    },
+
+    _buildDraftPayload: function () {
+
+      const oDraft = this.getView().getModel("DraftModel").getData();
+      const aComments = this.getView().getModel("commentModel").getData() || [];
+
+      return {
+        requestType: oDraft.requestType,
+        workflowStatus: "Draft",
+        requestStatus: "Draft",
+        createdByName: oDraft.createdByName,
+
+        conditionRecords: oDraft.salesPricingData.map(r => ({
+          conditionType: r.ConditionType,
+          keyCombinationId: r.KeyCombinationId,
+          fields: JSON.stringify(r.Fields),
+          columns: JSON.stringify(r.Columns)
+        })),
+
+        comments: aComments.map(c => ({
+          user: c.UserName,
+          role: "Initiator",
+          commentText: c.Text
+        }))
+      };
+    },
+
+
     _applyVisibility: function (sType) {
       var oView = this.getView();
 
@@ -219,7 +289,7 @@ sap.ui.define([
       }
     },
 
-    
+
 
     dialog_createConditionRecord_submit: async function () {
       const oView = this.getView();
@@ -482,6 +552,68 @@ sap.ui.define([
 
       oEvent.getSource().setValue("");
     },
+
+    async _patchRequest(payload, requestId) {
+
+      const base = this.getOwnerComponent()
+        .getManifestEntry("/sap.app/dataSources/DatabaseService/uri");
+
+      const csrf = await this._fetchServiceCSRFToken();
+
+      const response = await fetch(
+        `${base}SalesPricingRequests(requestId='${requestId}')`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": csrf
+          },
+          credentials: "include",
+          body: JSON.stringify(payload)
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+    },
+
+    //Draft Feature
+    onDraftPress: async function () {
+      try {
+        const oDraftModel = this.getView().getModel("DraftModel");
+        const oDraft = oDraftModel.getData();
+        const oModel = this.getOwnerComponent().getModel("ServiceModel");
+
+        const payload = this._buildDraftPayload();
+
+        if (oDraft.requestId) {
+          await this._patchRequest(payload, oDraft.requestId);
+        }
+        else {
+          const listBinding = oModel.bindList("/SalesPricingRequests");
+          const context = await listBinding.create(payload);
+          await context.created();
+
+          oDraftModel.setProperty(
+            "/requestId",
+            context.getProperty("requestId")
+          );
+        }
+
+        MessageToast.show("Draft saved successfully");
+
+        this.getOwnerComponent()
+          .getRouter()
+          .navTo("RouteOverview");
+
+      } catch (e) {
+        sap.m.MessageBox.error(
+          "Failed to save draft:\n\n" + (e.message || e)
+        );
+      }
+    }
+
 
 
   });

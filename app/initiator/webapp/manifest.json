@@ -39,6 +39,14 @@
           "annotations": [],
           "odataVersion": "2.0"
         }
+      },
+      "DatabaseService": {
+        "uri": "/odata/v4/sale-pricing/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
       }
     },
     "crossNavigation": {
@@ -110,6 +118,15 @@
       },
       "ValueHelp1Model": {
         "dataSource": "ValueHelp1Service",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "ServiceModel": {
+        "dataSource": "DatabaseService",
         "preload": true,
         "settings": {
           "operationMode": "Server",

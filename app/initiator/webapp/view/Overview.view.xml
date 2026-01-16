@@ -103,7 +103,7 @@
                    growing="true"
                    sticky="HeaderToolbar,ColumnHeaders"
                    noDataText="No data to display"
-                   items="{ path :'ServiceModel>/ConditionRequests', sorter:{path:'createdAt',descending:true} }"
+                   items="{ path :'ServiceModel>/SalesPricingRequests', sorter:{path:'createdAt',descending:true} }"
                    updateStarted="onUpdateStarted"
                    selectionChange="onRequestSelectionChange">
                 
