@@ -1,8 +1,6 @@
 namespace com.deloitte.mdg.sales.pricing;
 
-using {
-  managed
-} from '@sap/cds/common';
+using { cuid, managed } from '@sap/cds/common';
 
 @assert.range
 type RequestStatus  : String enum {
@@ -36,6 +34,14 @@ entity SalesPricingComments : managed {
       commentText : String(500);
 }
 
+entity SalesPricingCondition : cuid {
+  key ID               : UUID;
+      conditionType    : String(4);
+      keyCombinationId : String(50);
+      fields           : LargeString; 
+      columns          : LargeString;  
+      request          : Association to SalesPricingRequests;
+}
 
 entity SalesPricingRequests : managed {
   key requestId      : String(11);

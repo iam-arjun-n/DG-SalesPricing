@@ -240,25 +240,6 @@
                     />
                 </f:SimpleForm>
 
-                <HBox
-                    id="CreatePriceCondition_Page_HBox1"
-                    class="sapUiSmallMarginTop sapUiMediumMarginBeginEnd"
-                    justifyContent="End"
-                >
-                    <Button
-                        id="CreatePriceCondition_Page_Button_CopyFrom"
-                        text="Copy From"
-                        icon="sap-icon://copy"
-                        press="page_createPriceConditions_copyFrom"
-                    />
-                    <Button
-                        id="CreatePriceCondition_Page_Button_Execute"
-                        text="Execute"
-                        icon="sap-icon://feeder-arrow"
-                        type="Success"
-                        press="page_createPriceConditions_execute"
-                    />
-                </HBox>
             </VBox>
 
             <VBox
