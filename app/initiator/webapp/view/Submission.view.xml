@@ -113,6 +113,7 @@
                     press=""
                     text=""
                 />
+                <Button text="Save as Draft" id="Submission_Button_SaveAsDraft" type="Attention" press="onDraftPress" visible="true"/>
                 <ToolbarSpacer id="Create_Page_ToolbarSpacer1" />
                 <Button
                     id="Create_Page_Button_InitiateApprovalProcess"
