@@ -5,7 +5,7 @@ sap.ui.define([
   "sap/m/MessageToast",
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
-  "com/deloitte/mdg/salepricing/initiator/initiator/model/keyCombinations" // KeyCombination module
+  "com/deloitte/mdg/salepricing/initiator/initiator/model/keyCombinations"
 
 ], function (Controller, Fragment, JSONModel, MessageToast, Filter, FilterOperator, KeyCombinations) {
   "use strict";
@@ -13,6 +13,13 @@ sap.ui.define([
   return Controller.extend("com.deloitte.mdg.salepricing.initiator.initiator.controller.Submissison", {
 
     onInit: function () {
+      var oLocalModel = new JSONModel({ records: [] });
+      this.getView().setModel(oLocalModel, "local");
+      this.getView().byId("Submission_Table").setModel(oLocalModel);
+      this._selectedData = {
+        conditionType: "",
+        keyCombinationId: ""
+      };
       const oDraftModel = new sap.ui.model.json.JSONModel({
         requestId: "",
         requestType: "",
@@ -578,6 +585,21 @@ sap.ui.define([
       }
     },
 
+    async _fetchServiceCSRFToken() {
+      const base = this.getOwnerComponent()
+        .getManifestEntry("/sap.app/dataSources/DatabaseService/uri");
+
+      const response = await fetch(base, {
+        method: "GET",
+        headers: {
+          "X-CSRF-Token": "Fetch"
+        },
+        credentials: "include"
+      });
+
+      return response.headers.get("X-CSRF-Token");
+    },
+
     //Draft Feature
     onDraftPress: async function () {
       try {
@@ -613,8 +635,6 @@ sap.ui.define([
         );
       }
     }
-
-
 
   });
 });

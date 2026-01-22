@@ -14,7 +14,7 @@ type RequestStatus  : String enum {
 
 @assert.range
 type WorkflowStatus : String enum {
-  NotStarted;
+  Draft;
   InApproval;
   Completed;
   Rejected;
@@ -49,6 +49,8 @@ entity SalesPricingRequests : managed {
       workflowStatus : WorkflowStatus;
       requestStatus  : RequestStatus;
       createdByName  : String(80);
+      conditionRecords : Composition of many SalesPricingCondition
+        on conditionRecords.request = $self;
       comments       : Composition of many SalesPricingComments
                          on comments.request = $self;
 }

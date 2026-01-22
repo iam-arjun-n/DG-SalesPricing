@@ -4,24 +4,25 @@ module.exports = class SequenceHelper {
     this.table = options.table;
   }
 
-  async getNextNumber() {
-    try {
-      const sql = `
-      SELECT MAX("REQUESTID") AS MAX_ID
-      FROM "${this.table}"
-    `;
-      const result = await this.db.run(sql);
+  async getNextRequestId() {
+    const sql = `
+    SELECT MAX("REQUESTID") AS MAX_ID
+    FROM "${this.table}"
+  `;
 
-      const maxId = result[0]?.MAX_ID;
+    const result = await this.db.run(sql);
+    const maxId = result[0]?.MAX_ID;
 
-      if (!maxId) return 1;
+    let nextNumber = 1;
 
+    if (maxId) {
       const numeric = parseInt(maxId.replace("SPRC", ""), 10);
-      return numeric + 1;
-
-    } catch (err) {
-      console.error("SequenceHelper error:", err);
-      throw err;
+      if (!Number.isNaN(numeric)) {
+        nextNumber = numeric + 1;
+      }
     }
+
+    return `SPRC${String(nextNumber).padStart(6, "0")}`;
   }
+
 };

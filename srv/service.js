@@ -10,10 +10,9 @@ class SalesPricingService extends cds.ApplicationService {
       const hanaTable = "COM_DELOITTE_MDG_SALES_PRICING_SALESPRICINGREQUESTS";
 
       const seq = new SequenceHelper({ db, table: hanaTable });
-      const next = await seq.getNextNumber();
-      const padded = next.toString().padStart(7, "0");
+      const nextRequestId = await seq.getNextRequestId();
 
-      req.data.requestId = "SPRC" + padded;
+      req.data.requestId = nextRequestId;
 
       if (req.data.workflowStatus === "Draft") {
         req.data.requestStatus = "Draft";
