@@ -1,0 +1,79 @@
+name: Deploy to SAP BTP (Manual)
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️ Checkout source code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # 3️ Install Node dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 4️ Setup Java (required for MBT)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # 5️ Install MBT
+      - name: Install MBT
+        run: npm install -g mbt
+
+      # 6️ Build MTA
+      - name: MBT build
+        run: mbt build -p=cf
+
+      # 7️ Install Cloud Foundry CLI
+      - name: Install CF CLI
+        run: |
+          curl -fsSL https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key \
+            | sudo gpg --dearmor -o /usr/share/keyrings/cloudfoundry.gpg
+
+          echo "deb [signed-by=/usr/share/keyrings/cloudfoundry.gpg] https://packages.cloudfoundry.org/debian stable main" \
+            | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+
+          sudo apt-get update
+          sudo apt-get install -y cf8-cli
+          cf --version
+
+      # 8️ Install MTA Plugin
+      - name: Install CF MTA Plugin
+        run: |
+          cf add-plugin-repo CF-Community https://plugins.cloudfoundry.org
+          cf install-plugin multiapps -f
+          cf plugins
+
+      # 9️ Login to Cloud Foundry
+      - name: CF Login
+        run: |
+          cf login \
+            -a "$CF_API" \
+            -u "$CF_USERNAME" \
+            -p "$CF_PASSWORD" \
+            -o "$CF_ORG" \
+            -s "$CF_SPACE"
+        env:
+          CF_API: ${{ secrets.CF_API }}
+          CF_USERNAME: ${{ secrets.CF_USERNAME }}
+          CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
+          CF_ORG: ${{ secrets.CF_ORG }}
+          CF_SPACE: ${{ secrets.CF_SPACE }}
+
+      # 10 Deploy MTA
+      - name: CF Deploy
+        run: cf deploy mta_archives/*.mtar -f
