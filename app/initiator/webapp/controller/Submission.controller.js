@@ -46,34 +46,32 @@ sap.ui.define([
       const oDraftModel = this.getView().getModel("DraftModel");
 
       if (sRouteType !== "view") {
-
         const sFormatted =
           sRouteType.charAt(0).toUpperCase() + sRouteType.slice(1);
 
         oDraftModel.setProperty("/requestType", sFormatted);
-
         this._applyVisibility(sFormatted);
 
-        this.getUserInfo().then(u => {
+        const oUserModel = this.getOwnerComponent().getModel("userInfo");
+        if (oUserModel) {
+          const u = oUserModel.getData();
           oDraftModel.setProperty(
             "/createdByName",
-            u.displayName || u.email || u.name || u
+            u.displayName || u.email || u.name
           );
-        });
+        }
 
         return;
       }
 
       if (sRouteType === "view" && sReqId) {
         this._loadRequestFromCAP(sReqId).then(() => {
-
           const oDraft = oDraftModel.getData();
           let sVisibilityKey = "View";
 
           if (oDraft.workflowStatus === "Draft") {
             sVisibilityKey = "Draft_" + oDraft.requestType;
           }
-
           this._applyVisibility(sVisibilityKey);
         });
       }
@@ -120,8 +118,12 @@ sap.ui.define([
     },
 
     _buildDraftPayload: function () {
+      const oSubmissionModel = this.getOwnerComponent().getModel("submissionModel");
+      const aRows = oSubmissionModel.getProperty("/rows") || [];
 
-      const oDraft = this.getView().getModel("DraftModel").getData();
+      const oDraftModel = this.getView().getModel("DraftModel");
+      const oDraft = oDraftModel.getData();
+
       const aComments = this.getView().getModel("commentModel").getData() || [];
 
       return {
@@ -130,11 +132,11 @@ sap.ui.define([
         requestStatus: "Draft",
         createdByName: oDraft.createdByName,
 
-        conditionRecords: oDraft.salesPricingData.map(r => ({
-          conditionType: r.ConditionType,
-          keyCombinationId: r.KeyCombinationId,
-          fields: JSON.stringify(r.Fields),
-          columns: JSON.stringify(r.Columns)
+        conditionRecords: aRows.map(r => ({
+          conditionType: r.Data.ConditionType,
+          keyCombinationId: r.Data.KeyCombinationId,
+          fields: JSON.stringify(r.Data.Fields),
+          columns: JSON.stringify(r.Data.Columns)
         })),
 
         comments: aComments.map(c => ({
@@ -611,8 +613,7 @@ sap.ui.define([
 
         if (oDraft.requestId) {
           await this._patchRequest(payload, oDraft.requestId);
-        }
-        else {
+        } else {
           const listBinding = oModel.bindList("/SalesPricingRequests");
           const context = await listBinding.create(payload);
           await context.created();
@@ -624,10 +625,7 @@ sap.ui.define([
         }
 
         MessageToast.show("Draft saved successfully");
-
-        this.getOwnerComponent()
-          .getRouter()
-          .navTo("RouteOverview");
+        this.getOwnerComponent().getRouter().navTo("RouteOverview");
 
       } catch (e) {
         sap.m.MessageBox.error(
@@ -635,6 +633,7 @@ sap.ui.define([
         );
       }
     }
+
 
   });
 });

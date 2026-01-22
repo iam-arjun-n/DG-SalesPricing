@@ -3,66 +3,69 @@ sap.ui.define([], function () {
     return {
         getColor: function (ReqStat) {
             switch (ReqStat) {
+                case "Draft":
+                    return "Warning";
+
+                case "In Approval":
                 case "A":
                     return "Information";
-                case "Not Started":
-                    return "Error";
+
+                case "Completed":
                 case "C":
                     return "Success";
+
                 case "Rejected":
+                case "Not Started":
                     return "Error";
-                case "Completed":
-                    return "Success";
+
                 default:
                     return "Information";
             }
         },
+        getHighlight: function (status) {
+            switch (status) {
+                case "Draft":
+                    return "Warning";
 
-        checkStatus: function (oStatus) {
-            switch (oStatus) {
-                case "C":
-                    return true;
-                default:
-                    return false;
-            }
-        },
-
-        reqStatus: function (ReqStat) {
-            switch (ReqStat) {
+                case "InApproval":
                 case "In Approval":
-                    return "In Approval";
-                case "R":
-                    return "Rejected";
-                case "C":
-                    return "Completed";
+                    return "Information";
+
                 case "Completed":
-                    return "Completed";
-                case "Initiator":
-                    return "Initiator";
-                case "HOD":
-                    return "At HOD";
-                case "MDM":
-                    return "At MDM";
-                case "Costing":
-                    return "At Costing";
-                case "Commercial":
-                    return "At Commercial";
-                case "CostingAndCommercial":
-                    return "At Costing & Commercial";
+                    return "Success";
+
                 case "Rejected":
-                    return "Rejected";
+                    return "Error";
+
                 default:
-                    return "Not Defined";
+                    return "None";
             }
         },
 
-        extDate: function (date) {
-            if (date) {
-                const day = date.toLocaleString("default", { day: "2-digit" });
-                const month = date.toLocaleString("default", { month: "short" });
-                const year = date.toLocaleString("default", { year: "numeric" });
-                return `${day}-${month}-${year}`;
+        reqWorkflowText: function (sStatus) {
+            switch (sStatus) {
+                case "Draft": return "Draft";
+                case "InApproval": return "In Approval";
+                case "Completed": return "Completed";
+                case "Rejected": return "Rejected";
+                case "NotStarted": return "Not Started";
+                default: return sStatus;
             }
+        },
+
+        extDate: function (vDate) {
+            if (!vDate) {
+                return "";
+            }
+            const oDate = vDate instanceof Date ? vDate : new Date(vDate);
+            if (isNaN(oDate.getTime())) {
+                return "";
+            }
+            const dd = String(oDate.getDate()).padStart(2, "0");
+            const mm = String(oDate.getMonth() + 1).padStart(2, "0");
+            const yyyy = oDate.getFullYear();
+
+            return `${dd}-${mm}-${yyyy}`;
         }
     };
 });

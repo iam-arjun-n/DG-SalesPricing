@@ -7,24 +7,24 @@ class SalesPricingService extends cds.ApplicationService {
     const { SalesPricingRequests } = this.entities;
 
     this.before("CREATE", SalesPricingRequests, async (req) => {
-      const hanaTable = "COM_DELOITTE_MDG_SALES_PRICING_SALESPRICINGREQUESTS";
 
-      const seq = new SequenceHelper({ db, table: hanaTable });
-      const nextRequestId = await seq.getNextRequestId();
+      const seq = new SequenceHelper({
+        db,
+        entity: SalesPricingRequests
+      });
 
-      req.data.requestId = nextRequestId;
+      req.data.requestId = await seq.getNextRequestId();
 
       if (req.data.workflowStatus === "Draft") {
         req.data.requestStatus = "Draft";
-        return;
+      } else {
+        req.data.requestStatus = "Submitted";
+        req.data.workflowStatus = "InApproval";
       }
-
-      req.data.requestStatus = "Submitted";
-      req.data.workflowStatus = "InApproval";
     });
 
     return super.init();
   }
 }
 
-module.exports = { SalesPricingService };
+module.exports = SalesPricingService;
