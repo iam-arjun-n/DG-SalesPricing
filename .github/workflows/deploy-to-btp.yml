@@ -1,4 +1,4 @@
-name: Deploy to SAP BTP (Manual)
+name: Deploy
 
 on:
   workflow_dispatch: 
