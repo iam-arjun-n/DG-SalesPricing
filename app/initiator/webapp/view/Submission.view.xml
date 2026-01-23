@@ -120,7 +120,7 @@
                     text="Send for Approval"
                     icon="sap-icon://paper-plane"
                     type="Accept"
-                    press=""
+                    press="onSendForApproval"
                 />
             </OverflowToolbar>
         </footer>

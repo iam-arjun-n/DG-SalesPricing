@@ -632,7 +632,137 @@ sap.ui.define([
           "Failed to save draft:\n\n" + (e.message || e)
         );
       }
-    }
+    },
+    _getWorkflowBaseURL: function () {
+      const appId = this.getOwnerComponent().getManifestEntry("/sap.app/id");
+      const appPath = appId.replaceAll(".", "/");
+      return jQuery.sap.getModulePath(appPath) + "/bpmworkflowruntime/v1";
+    },
+    _fetchWorkflowCSRFToken: function () {
+      let token;
+
+      $.ajax({
+        url: this._getWorkflowBaseURL() + "/xsrf-token",
+        method: "GET",
+        async: false,
+        headers: { "X-CSRF-Token": "Fetch" },
+        success: function (_, __, xhr) {
+          token = xhr.getResponseHeader("X-CSRF-Token");
+        }
+      });
+
+      if (!token) {
+        throw new Error("Failed to fetch Workflow CSRF token");
+      }
+
+      return token;
+    },
+
+    onSendForApproval: async function () {
+      try {
+        const oView = this.getView();
+        const oDraftModel = oView.getModel("DraftModel");
+        const oDraft = oDraftModel.getData();
+        const oModel = this.getOwnerComponent().getModel("ServiceModel");
+
+        const oSubmissionModel = this.getOwnerComponent().getModel("submissionModel");
+        const aRows = oSubmissionModel.getProperty("/rows") || [];
+
+        const aComments = oView.getModel("commentModel").getData() || [];
+
+        // ---------- VALIDATIONS ----------
+        if (!aRows.length) {
+          sap.m.MessageBox.information(
+            "Please add at least one condition record before sending for approval."
+          );
+          return;
+        }
+
+        if (!aComments.length) {
+          sap.m.MessageBox.information(
+            "Please add at least one comment before sending for approval."
+          );
+          return;
+        }
+
+        // ---------- BUILD PAYLOAD ----------
+        const payload = {
+          requestType: oDraft.requestType,
+          workflowStatus: "InApproval",
+          requestStatus: "Submitted",
+          createdByName: oDraft.createdByName,
+
+          conditionRecords: aRows.map(r => ({
+            conditionType: r.Data.ConditionType,
+            keyCombinationId: r.Data.KeyCombinationId,
+            fields: JSON.stringify(r.Data.Fields),
+            columns: JSON.stringify(r.Data.Columns)
+          })),
+
+          comments: aComments.map(c => ({
+            user: c.UserName,
+            role: "Initiator",
+            commentText: c.Text
+          }))
+        };
+
+        let reqId;
+
+        // ---------- UPDATE EXISTING DRAFT ----------
+        if (oDraft.requestId) {
+          await this._patchRequest(payload, oDraft.requestId);
+          reqId = oDraft.requestId;
+        }
+        // ---------- CREATE + SUBMIT ----------
+        else {
+          const listBinding = oModel.bindList("/SalesPricingRequests");
+          const context = await listBinding.create(payload);
+          await context.created();
+          reqId = context.getProperty("requestId");
+        }
+
+        // ---------- TRIGGER WORKFLOW ----------
+        const wfResponse = await fetch(
+          this._getWorkflowBaseURL() + "/workflow-instances",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRF-Token": this._fetchWorkflowCSRFToken()
+            },
+            body: JSON.stringify({
+              definitionId:
+                "com.deloitte.mdg.salepricing.workflow.salespricingapprovalprocess",
+              context: { ReqId: reqId }
+            })
+          }
+        );
+
+        // if (!wfResponse.ok) {
+        //   throw new Error(await wfResponse.text());
+        // }
+
+        sap.m.MessageToast.show("Request sent for approval successfully");
+
+        // ---------- CLEAN UP + NAVIGATION ----------
+        oView.getModel("commentModel").setData([]);
+        oDraftModel.setData({
+          requestId: "",
+          requestType: "",
+          workflowStatus: "",
+          requestStatus: "",
+          createdByName: "",
+          salesPricingData: []
+        });
+
+        this.getOwnerComponent().getRouter().navTo("RouteOverview");
+
+      } catch (e) {
+        sap.m.MessageBox.error(
+          "Failed to send for approval:\n\n" + (e.message || e)
+        );
+      }
+    },
 
 
   });
