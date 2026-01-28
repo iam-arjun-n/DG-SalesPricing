@@ -6,12 +6,10 @@
     xmlns="sap.m"
     xmlns:sap.ui.unified="sap.ui.unified"
 >
-<App id="App" >
+<App id="App">
     <Page
         id="Create"
         title="Condition Records - {RequestModel>/requestType}"
-        showNavButton="true"
-        navButtonPress="navBack"
         backgroundDesign="Solid"
     >
         <content>
