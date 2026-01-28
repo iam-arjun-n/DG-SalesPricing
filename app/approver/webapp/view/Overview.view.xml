@@ -1,6 +1,102 @@
-<mvc:View controllerName="com.deloitte.mdg.salepricing.approver.approver.controller.Overview"
+<mvc:View
+    controllerName="com.deloitte.mdg.salepricing.approver.approver.controller.Overview"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
+    displayBlock="true"
+    xmlns:smartTable="sap.ui.comp.smarttable"
+    xmlns="sap.m"
+    xmlns:sap.ui.unified="sap.ui.unified"
+>
+<App id="App" >
+    <Page
+        id="Create"
+        title="Condition Records - {RequestModel>/requestType}"
+        showNavButton="true"
+        navButtonPress="navBack"
+        backgroundDesign="Solid"
+    >
+        <content>
+            <Panel
+                id="Overview_Panel_1"
+                headerText="Condition Record Detail's"
+                expandable="true"
+                expanded="true"
+                width="auto"
+                class="sapUiResponsiveMargin"
+            >
+                <Table
+                    id="Overview_Table"
+                    inset="false"
+                    noDataText="No Data. Use 'Upload' or 'Add new' for adding records"
+                    selectionChange="onSelectionChange"
+                    alternateRowColors="false"
+                    mode="SingleSelectLeft"
+                    items="{
+                        path: 'submissionModel>/rows'
+                    }"
+                >
+                    
+                    <headerToolbar>
+                            <OverflowToolbar width="100%" id="Overview_Toolbar1">
+                                <content>
+                                    <OverflowToolbar id="Overview_Header1" width="100%">
+                                        <content>
+                                            <ToolbarSpacer id="SpaceForView" />
+                                            <Button id="Overview_Button_View" text="View" icon="sap-icon://detail-view" press="onView" enabled="false" />
+                                        </content>
+                                    </OverflowToolbar>
+                                </content>
+                            </OverflowToolbar>
+                        </headerToolbar>
+                    <columns>
+                        <Column id="Overview_Column_ConditionType"><Text id="Overview_Text" text="Condition Type"/></Column>
+    <Column id="Overview_Column_SalesOrg"><Text id="Overview_Text1" text="Sales Organization"/></Column>
+    <Column id="Overview_Column_DistChan"><Text id="Overview_Text2" text="Distribution Channel"/></Column>
+    <Column id="Overview_Column_Customer"><Text id="Overview_Text3" text="Customer"/></Column>
+    <Column id="Overview_Column_Material"><Text id="Overview_Text4" text="Material"/></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem id="Overview_ColumnListItem">
+                            <cells>
+        <Text id="Overview_Text5" text="{submissionModel>Display/ConditionType}"/>
+        <Text id="Overview_Text6" text="{submissionModel>Display/SalesOrganization}"/>
+        <Text id="Overview_Text7" text="{submissionModel>Display/DistributionChannel}"/>
+        <Text id="Overview_Text8" text="{submissionModel>Display/Customer}"/>
+        <Text id="Overview_Text9" text="{submissionModel>Display/Material}"/>
+      </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </Panel>
+
+            <Panel id="Approval_Panel"
+                        expanded="true"
+                        expandable="true"
+                        headerText="Comments"
+                        width="auto"
+                        class="sapUiResponsiveMargin"
+                    >
+                        <content>
+                            <FeedInput
+                                id="fIC"
+                                post="onPostComment"
+                                class="sapUiSmallMarginTopBottom"
+                                maxLength="100"
+                                placeholder="Add a comment - Character length limited to 100"
+                            />
+                            <List
+                                showSeparators="Inner"
+                                items="{commentModel>/}"
+                                id="flist"
+                            >
+                                <FeedListItem id="Approval_FeedListItem"
+                                    sender="{commentModel>UserName}"
+                                    timestamp="{commentModel>Date}"
+                                    text="{commentModel>Text}"
+                                />
+                            </List>
+                        </content>
+                    </Panel>
+        </content>
     </Page>
+    </App>
 </mvc:View>

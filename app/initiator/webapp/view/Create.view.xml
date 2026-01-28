@@ -197,7 +197,7 @@
                         required="true"
                         showValueHelp="true"
                         showSuggestion="true"
-                        valueHelpRequest=""
+                        valueHelpRequest="onF4_Field_PriceListType"
                         suggest="onSuggestPriceListType"
                         liveChange="onLivePriceListType"
                         visible="{viewModel>/Field_Price_List_Type/visible}"

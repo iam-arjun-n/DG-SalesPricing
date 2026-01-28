@@ -89,7 +89,7 @@
       }
     },
     "rootView": {
-      "viewName": "com.deloitte.mdg.salepricing.approver.approver.view.App",
+      "viewName": "com.deloitte.mdg.salepricing.approver.approver.view.Overview",
       "type": "XML",
       "id": "App",
       "async": true

@@ -509,14 +509,14 @@ sap.ui.define([
             sap.ui.core.BusyIndicator.show();
             this._currentInputId = oEvent.getSource().getId();
             var oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
-            var sEntitySet = "/I_Altvcurrency";
+            var sEntitySet = "/ZI_SDCURRENCY";
 
             oModel.read(sEntitySet, {
                 success: function (oData) {
                     var aResults = oData.results.map(function (item) {
                         return {
-                            title: item.Currency,                  // EUR
-                            description: item.AlternativeCurrencyKey || item.CurrencyISOCode || ""
+                            title: item.currency,                
+                            description: item.currency 
                         };
                     });
                     var oF4Model = new sap.ui.model.json.JSONModel({
@@ -538,6 +538,38 @@ sap.ui.define([
             });
         },
 
+        onF4_Field_PriceListType: function (oEvent) {
+            sap.ui.core.BusyIndicator.show();
+            this._currentInputId = oEvent.getSource().getId();
+            var oModel = this.getOwnerComponent().getModel("ValueHelp1Model");
+            var sEntitySet = "/ZI_SDCURRENCY";
+
+            oModel.read(sEntitySet, {
+                success: function (oData) {
+                    var aResults = oData.results.map(function (item) {
+                        return {
+                            title: item.PriceListType,                
+                            description: item.PLTDescription 
+                        };
+                    });
+                    var oF4Model = new sap.ui.model.json.JSONModel({
+                        results: aResults
+                    });
+
+                    this.getView().setModel(oF4Model, "F4Model");
+                    this._openF4Dialog("Price List Type");
+
+                    sap.ui.core.BusyIndicator.hide();
+                }.bind(this),
+
+                error: function (oError) {
+                    sap.ui.core.BusyIndicator.hide();
+                    sap.m.MessageBox.error(
+                        "Failed to load Price List Type value help"
+                    );
+                }
+            });
+        },
 
         //F4 Main Function For Columns
         onF4_Column_Material: function (oEvent) {
@@ -768,7 +800,8 @@ sap.ui.define([
                     DistributionChannel: this._resolveValue(oDraft, "Distribution_Channel"),
                     Customer: this._resolveValue(oDraft, "Customer"),
                     Material: this._resolveValue(oDraft, "Material"),
-                    Division: this._resolveValue(oDraft, "Division")
+                    Division: this._resolveValue(oDraft, "Division"),
+                    
                 }
             };
 

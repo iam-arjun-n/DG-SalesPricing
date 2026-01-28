@@ -634,13 +634,13 @@ sap.ui.define([
       }
     },
     _getWorkflowBaseURL: function () {
-      const appId = this.getOwnerComponent().getManifestEntry("/sap.app/id");
-      const appPath = appId.replaceAll(".", "/");
+      let appId = this.getOwnerComponent().getManifestEntry("/sap.app/id");
+      let appPath = appId.replaceAll(".", "/");
       return jQuery.sap.getModulePath(appPath) + "/bpmworkflowruntime/v1";
     },
-    _fetchWorkflowCSRFToken: function () {
-      let token;
 
+    _fetchCSRFToken: function () {
+      let token;
       $.ajax({
         url: this._getWorkflowBaseURL() + "/xsrf-token",
         method: "GET",
@@ -650,11 +650,6 @@ sap.ui.define([
           token = xhr.getResponseHeader("X-CSRF-Token");
         }
       });
-
-      if (!token) {
-        throw new Error("Failed to fetch Workflow CSRF token");
-      }
-
       return token;
     },
 
@@ -728,19 +723,18 @@ sap.ui.define([
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-CSRF-Token": this._fetchWorkflowCSRFToken()
+              "X-CSRF-Token": this._fetchCSRFToken()
             },
             body: JSON.stringify({
-              definitionId:
-                "com.deloitte.mdg.salepricing.workflow.salespricingapprovalprocess",
+              definitionId: "com.deloitte.mdg.salespricing.worflow.approvalprocess",
               context: { ReqId: reqId }
             })
           }
         );
 
-        // if (!wfResponse.ok) {
-        //   throw new Error(await wfResponse.text());
-        // }
+        if (!wfResponse.ok) {
+          throw new Error(await wfResponse.text());
+        }
 
         sap.m.MessageToast.show("Request sent for approval successfully");
 
