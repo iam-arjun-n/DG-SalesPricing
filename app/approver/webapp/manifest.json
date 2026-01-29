@@ -14,6 +14,16 @@
       "id": "@sap/generator-fiori:basic",
       "version": "1.20.0",
       "toolsId": "9e0a667f-018e-4002-88c5-d58a77fc4712"
+    },
+    "dataSources": {
+      "DatabaseService": {
+        "uri": "/odata/v4/sale-pricing/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
     }
   },
   "sap.ui": {
@@ -51,6 +61,15 @@
         "settings": {
           "bundleName": "com.deloitte.mdg.salepricing.approver.approver.i18n.i18n"
         }
+      },
+      "ServiceModel": {
+        "dataSource": "DatabaseService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
       }
     },
     "resources": {
@@ -79,12 +98,23 @@
           "target": [
             "TargetOverview"
           ]
+        },
+        {
+          "name": "RouteView",
+          "pattern": "View/{data}",
+          "target": [
+            "TargetView"
+          ]
         }
       ],
       "targets": {
         "TargetOverview": {
           "id": "Overview",
           "name": "Overview"
+        },
+        "TargetView": {
+          "id": "View",
+          "name": "View"
         }
       }
     },
