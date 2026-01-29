@@ -34,7 +34,21 @@ sap.ui.define([
                     .navTo("RouteView", {
                         data: encodeURIComponent(JSON.stringify(oRow))
                     });
-            }
+            },
+
+            onPostComment: function (oEvent) {
+                const text = oEvent.getParameter("value");
+                if (!text || !text.trim()) return;
+
+                const user =
+                    sap.ushell?.Container?.getUser?.()
+                        ? sap.ushell.Container.getUser().getEmail()
+                        : "approver@system.com";
+
+                this.getOwnerComponent().addApproverCommentToModels(text, user);
+                oEvent.getSource().setValue("");
+            },
+
         }
     );
 });

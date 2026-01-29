@@ -16,8 +16,9 @@ sap.ui.define([
             this.setModel(models.createDeviceModel(), "device");
             this.setModel(new JSONModel({ reqId: "" }), "request");
             this.setModel(new JSONModel({ rows: [] }), "submissionModel");
+            this.setModel(new JSONModel([]), "initiatorModel");
+            this.setModel(new JSONModel([]), "approverModel");
             this.setModel(new JSONModel([]), "commentModel");
-
             this.getRouter().initialize();
             this._setupInboxActions();
             this._loadWorkflowContext();
@@ -170,14 +171,77 @@ sap.ui.define([
 
                 this.getModel("submissionModel").setData({ rows });
 
-                const comments = (oData.comments || []).map(c => ({
-                    UserName: c.createdBy,
-                    Date: c.createdAt,
-                    Text: c.commentText
-                }));
+                const initiatorComments = (oData.comments || [])
+                    .filter(c => c.role !== "Approver")
+                    .map(c => ({
+                        Text: c.commentText,
+                        UserName: c.createdBy,
+                        Date: c.createdAt ? new Date(c.createdAt).toLocaleString() : "",
+                        IsNew: false
+                    }));
 
-                this.getModel("commentModel").setData(comments);
+                this.getModel("initiatorModel").setData(initiatorComments);
+
+                // merge after load
+                this._mergeComments();
             });
-        }
+        },
+        _hasNewComment: function (comments) {
+            return comments.some(c => c.IsNew);
+        },
+
+        _mergeComments: function () {
+            const init = this.getModel("initiatorModel").getData() || [];
+            const appr = this.getModel("approverModel").getData() || [];
+
+            const merged = [...appr, ...init];
+
+            merged.sort((a, b) => new Date(b.Date) - new Date(a.Date));
+
+            this.getModel("commentModel").setData(merged);
+        },
+
+        addApproverCommentToModels: function (text, userName) {
+            const apprModel = this.getModel("approverModel");
+            const arr = apprModel.getData() || [];
+
+            arr.push({
+                Text: text,
+                UserName: userName || "Approver",
+                Date: new Date().toLocaleString(),
+                IsNew: true
+            });
+
+            apprModel.setData(arr);
+            this._mergeComments();
+        },
+        _addApproveComment: async function () {
+    const comments = this.getModel("commentModel").getData() || [];
+    const newComments = comments.filter(c => c.IsNew);
+    if (!newComments.length) return;
+
+    const base = this._getDatabaseBaseURL();
+    const token = await this._fetchCAPCsrf();
+    const requestId = this.getModel("request").getProperty("/reqId");
+
+    for (let c of newComments) {
+        await fetch(`${base}SalesPricingComments`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": token
+            },
+            body: JSON.stringify({
+                commentText: c.Text,
+                role: "Approver",
+                user: c.UserName,
+                request_requestId: requestId
+            }),
+            credentials: "include"
+        });
+    }
+},
+
+
     });
 });
