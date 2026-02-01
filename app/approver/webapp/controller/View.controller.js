@@ -53,32 +53,69 @@ sap.ui.define([
             },
 
             _applyKeyCombinationVisibility: function (conditionType, keyCombinationId) {
-                const aConfigs =
-                    KeyCombinations.Configuration[conditionType] || [];
-
-                const oConfig = aConfigs.find(c => c.id === keyCombinationId);
-                if (!oConfig) {
-                    console.warn(
-                        "No key combination config found",
-                        conditionType,
-                        keyCombinationId
-                    );
-                    return;
-                }
+                const configs = KeyCombinations.Configuration[conditionType] || [];
+                const config = configs.find(c => c.id === keyCombinationId);
 
                 const oViewState = {};
 
-                oConfig.fields.forEach(id => {
-                    oViewState[id] = { visible: true };
-                });
+                [
+                    "Field_Sales_Organization",
+                    "Field_Distribution_Channel",
+                    "Field_Customer",
+                    "Field_Material",
+                    "Field_Material_Price_Group",
+                    "Field_Division",
+                    "Field_Departure_City_Region",
+                    "Field_Sold_To_Party",
+                    "Field_Price_List_Type",
+                    "Field_Document_Currency",
+                    "Field_Supplier",
+                    "Column_Material",
+                    "Column_Material_Group",
+                    "Column_Plant",
+                    "Column_Status",
+                    "Column_Price_Group",
+                    "Column_Departure_City_Region",
+                    "Column_Tax_Class_Customer",
+                    "Column_Tax_Class_Material",
+                    "Column_Description",
+                    "Column_Processing_Status",
+                    "Column_Partner_Role",
+                    "Column_Amount",
+                    "Column_Unit",
+                    "Column_Pricing_Unit",
+                    "Column_UoM",
+                    "Column_Calculation_Type",
+                    "Column_Scale_Base_Type",
+                    "Column_Valid_From",
+                    "Column_Valid_To",
+                    "Column_Deletion",
+                    "Column_Condition_Supplement",
+                    "Column_Scales",
+                    "Column_Texts",
+                    "Column_Exclusion",
+                    "Column_Payment_Terms",
+                    "Column_Fixed_Value_Date",
+                    "Column_Additional_Value_Days",
+                    "Column_Customer",
+                    "Column_Tax_Code",
+                    "Column_Withholding_Tax_Code",
+                    "Column_Licence_No",
+                    "Column_Licence_Date",
+                    "Column_Deletion_Indictor"].forEach(id => {
+                        oViewState[id] = { visible: false };
+                    });
+
+                if (config) {
+                    config.fields.forEach(id => {
+                        oViewState[id] = { visible: true };
+                    });
+                }
 
                 oViewState.showVBox = true;
                 oViewState.addrowbtn = false;
 
-                this.getView().setModel(
-                    new JSONModel(oViewState),
-                    "viewModel"
-                );
+                this.getView().setModel(new JSONModel(oViewState), "viewModel");
             },
 
             navBack: function () {

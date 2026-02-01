@@ -50,12 +50,7 @@
                     <Input
                         id="Field_Sales_Organization_Input"
                         value="{fieldModel>/Sales_Organization}"
-                        required="true"
-                        showValueHelp="true"
-                        showSuggestion="true"
-                        valueHelpRequest="onF4_Field_SalesOrganization"
-                        suggest="onSuggestSalesOrganization"
-                        liveChange="onLiveSalesOrganization"
+                        enabled="false"
                         visible="{viewModel>/Field_Sales_Organization/visible}"
                     />
                     <Label
@@ -68,12 +63,7 @@
                     <Input
                         id="Field_Distribution_Channel_Input"
                         value="{fieldModel>/Distribution_Channel}"
-                        required="false"
-                        showValueHelp="true"
-                        showSuggestion="true"
-                        valueHelpRequest="onF4_Field_DistributionChannel"
-                        suggest="onSuggestDistributionChannel"
-                        liveChange="onLiveDistributionChannel"
+                        enabled="false"
                         visible="{viewModel>/Field_Distribution_Channel/visible}"
                     />
                     <Label
@@ -86,12 +76,7 @@
                     <Input
                         id="Field_Customer_Input"
                         value="{fieldModel>/Customer}"
-                        required="true"
-                        showValueHelp="true"
-                        showSuggestion="true"
-                        valueHelpRequest="onF4_Field_Customer"
-                        suggest="onSuggestCustomer"
-                        liveChange="onLiveCustomer"
+                        enabled="false"
                         visible="{viewModel>/Field_Customer/visible}"
                     />
                     <Label
@@ -104,12 +89,7 @@
                     <Input
                         id="Field_Material_Input"
                         value="{fieldModel>/Material}"
-                        required="true"
-                        showValueHelp="true"
-                        showSuggestion="true"
-                        valueHelpRequest="onF4_Field_Material"
-                        suggest="onSuggestMaterial"
-                        liveChange="onLiveMaterial"
+                        enabled="false"
                         visible="{viewModel>/Field_Material/visible}"
                     />
                     <Label
@@ -122,12 +102,7 @@
                     <Input
                         id="Field_Material_Price_Group_Input"
                         value="{fieldModel>/Material_Price_Group}"
-                        required="true"
-                        showValueHelp="true"
-                        showSuggestion="true"
-                        valueHelpRequest="onF4_Field_MaterialGroup"
-                        suggest="onSuggestMaterialGroup"
-                        liveChange="onLiveMaterialGroup"
+                        enabled="false"
                         visible="{viewModel>/Field_Material_Price_Group/visible}"
                     />
                     <Label
@@ -140,12 +115,7 @@
                     <Input
                         id="Field_Division_Input"
                         value="{fieldModel>/Division}"
-                        required="true"
-                        showValueHelp="true"
-                        showSuggestion="true"
-                        valueHelpRequest="onF4_Field_Division"
-                        suggest="onSuggestDivision"
-                        liveChange="onLiveDivision"
+                        enabled="false"
                         visible="{viewModel>/Field_Division/visible}"
                     />
                     <Label
@@ -158,12 +128,7 @@
                     <Input
                         id="Field_Departure_City_Region_Input"
                         value="{fieldModel>/Departure_City_Region}"
-                        required="true"
-                        showValueHelp="true"
-                        showSuggestion="true"
-                        valueHelpRequest=""
-                        suggest="onSuggestDepartureCityRegion"
-                        liveChange="onLiveDepartureCityRegion"
+                        enabled="false"
                         visible="{viewModel>/Field_Departure_City_Region/visible}"
                     />
                     <Label
@@ -176,12 +141,7 @@
                     <Input
                         id="Field_Sold_To_Party_Input"
                         value="{fieldModel>/Sold_To_Party}"
-                        required="true"
-                        showValueHelp="true"
-                        showSuggestion="true"
-                        valueHelpRequest="onF4_Field_SoldToParty"
-                        suggest="onSuggestSoldToParty"
-                        liveChange="onLiveSoldToParty"
+                        enabled="false"
                         visible="{viewModel>/Field_Sold_To_Party/visible}"
                     />
                     <Label
@@ -194,12 +154,7 @@
                     <Input
                         id="Field_Price_List_Type_Input"
                         value="{fieldModel>/Price_List_Type}"
-                        required="true"
-                        showValueHelp="true"
-                        showSuggestion="true"
-                        valueHelpRequest="onF4_Field_PriceListType"
-                        suggest="onSuggestPriceListType"
-                        liveChange="onLivePriceListType"
+                        enabled="false"
                         visible="{viewModel>/Field_Price_List_Type/visible}"
                     />
                     <Label
@@ -212,12 +167,7 @@
                     <Input
                         id="Field_Document_Currency_Input"
                         value="{fieldModel>/Document_Currency}"
-                        required="true"
-                        showValueHelp="true"
-                        showSuggestion="true"
-                        valueHelpRequest="onF4_Field_DocumentCurrency"
-                        suggest="onSuggestDocumentCurrency"
-                        liveChange="onLiveDocumentCurrency"
+                        enabled="false"
                         visible="{viewModel>/Field_Document_Currency/visible}"
                     />
                     <Label
@@ -230,12 +180,7 @@
                     <Input
                         id="Field_Supplier_Input"
                         value="{fieldModel>/Supplier}"
-                        required="true"
-                        showValueHelp="true"
-                        showSuggestion="true"
-                        valueHelpRequest="onF4_Field_Supplier"
-                        suggest="onSuggestSupplier"
-                        liveChange="onLiveSupplier"
+                        enabled="false"
                         visible="{viewModel>/Field_Supplier/visible}"
                     />
                 </f:SimpleForm>
@@ -293,8 +238,7 @@
                                 <Input
                                     id="Column_Input_Material"
                                     value="{columnModel>Material}"
-                                    showValueHelp="true"
-                                    valueHelpRequest="onF4_Column_Material"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Material/visible}"
                                 />
                             </u:template>
@@ -313,8 +257,7 @@
                                 <Input
                                     id="Column_Input_Material_Group"
                                     value="{columnModel>Material_Group}"
-                                    showValueHelp="true"
-                                    valueHelpRequest="onF4_Column_MaterialGroup"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Material_Group/visible}"
                                 />
                             </u:template>
@@ -333,8 +276,7 @@
                                 <Input
                                     id="Column_Input_Customer"
                                     value="{columnModel>Customer}"
-                                    showValueHelp="true"
-                                    valueHelpRequest="onF4_Column_Customer"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Customer/visible}"
                                 />
                             </u:template>
@@ -353,8 +295,7 @@
                                 <Input
                                     id="Column_Input_Plant"
                                     value="{columnModel>Plant}"
-                                    showValueHelp="true"
-                                    valueHelpRequest="onF4_Column_Plant"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Plant/visible}"
                                 />
                             </u:template>
@@ -373,6 +314,7 @@
                                 <Input
                                     id="Column_Input_Status"
                                     value="{columnModel>Status}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Status/visible}"
                                 />
                             </u:template>
@@ -391,6 +333,7 @@
                                 <Input
                                     id="Column_Input_Price_Group"
                                     value="{columnModel>Price_Group}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Price_Group/visible}"
                                 />
                             </u:template>
@@ -409,6 +352,7 @@
                                 <Input
                                     id="Column_Input_Departure_City_Region"
                                     value="{columnModel>Departure_City_Region}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Departure_City_Region/visible}"
                                 />
                             </u:template>
@@ -427,6 +371,7 @@
                                 <Input
                                     id="Column_Input_Tax_Class_Customer"
                                     value="{columnModel>Tax_Class_Customer}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Tax_Class_Customer/visible}"
                                 />
                             </u:template>
@@ -445,6 +390,7 @@
                                 <Input
                                     id="Column_Input_Tax_Class_Material"
                                     value="{columnModel>Class_Material}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Tax_Class_Material/visible}"
                                 />
                             </u:template>
@@ -463,6 +409,7 @@
                                 <Input
                                     id="Column_Input_Description"
                                     value="{columnModel>Description}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Description/visible}"
                                 />
                             </u:template>
@@ -481,6 +428,7 @@
                                 <Input
                                     id="Column_Input_Processing_Status"
                                     value="{columnModel>Processing_Status}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Processing_Status/visible}"
                                 />
                             </u:template>
@@ -499,6 +447,7 @@
                                 <Input
                                     id="Column_Input_Partner_Role"
                                     value="{columnModel>Partner_Role}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Partner_Role/visible}"
                                 />
                             </u:template>
@@ -517,6 +466,7 @@
                                 <Input
                                     id="Column_Input_Amount"
                                     value="{columnModel>Amount}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Amount/visible}"
                                 />
                             </u:template>
@@ -535,6 +485,7 @@
                                 <Input
                                     id="Column_Input_Unit"
                                     value="{columnModel>Unit}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Unit/visible}"
                                 />
                             </u:template>
@@ -553,6 +504,7 @@
                                 <Input
                                     id="Column_Input_Pricing_Unit"
                                     value="{columnModel>Pricing_Unit}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Pricing_Unit/visible}"
                                 />
                             </u:template>
@@ -571,8 +523,7 @@
                                 <Input
                                     id="Column_Input_UoM"
                                     value="{columnModel>UoM}"
-                                    showValueHelp="true"
-                                    valueHelpRequest="onF4_Column_UoM"
+                                    enabled="false"
                                     visible="{viewModel>/Column_UoM/visible}"
                                 />
                             </u:template>
@@ -591,6 +542,7 @@
                                 <Input
                                     id="Column_Input_Calculation_Type"
                                     value="{columnModel>Calculation_Type}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Calculation_Type/visible}"
                                 />
                             </u:template>
@@ -609,6 +561,7 @@
                                 <Input
                                     id="Column_Input_Scale_Base_Type"
                                     value="{columnModel>Scale_Base_Type}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Scale_Base_Type/visible}"
                                 />
                             </u:template>
@@ -669,6 +622,7 @@
                                 <CheckBox
                                     id="Column_CheckBox_Deletion"
                                     selected="false"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Deletion/visible}"
                                 />
                             </u:template>
@@ -687,6 +641,7 @@
                                 <CheckBox
                                     id="Column_CheckBox_Condition_Supplement"
                                     selected="false"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Condition_Supplement/visible}"
                                 />
                             </u:template>
@@ -705,6 +660,7 @@
                                 <CheckBox
                                     id="Column_CheckBox_Scales"
                                     selected="false"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Scales/visible}"
                                 />
                             </u:template>
@@ -723,6 +679,7 @@
                                 <CheckBox
                                     id="Column_CheckBox_Texts"
                                     selected="false"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Texts/visible}"
                                 />
                             </u:template>
@@ -741,6 +698,7 @@
                                 <Input
                                     id="Column_Input_Exclusion"
                                     value="{columnModel>Exclusion}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Exclusion/visible}"
                                 />
                             </u:template>
@@ -759,6 +717,7 @@
                                 <Input
                                     id="Column_Input_Payment_Terms"
                                     value="{columnModel>Payment_Terms}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Payment_Terms/visible}"
                                 />
                             </u:template>
@@ -777,6 +736,7 @@
                                 <Input
                                     id="Column_Input_Fixed_Value_Date"
                                     value="{columnModel>Fixed_Value_Date}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Fixed_Value_Date/visible}"
                                 />
                             </u:template>
@@ -795,6 +755,7 @@
                                 <Input
                                     id="Column_Input_Additional_Value_Days"
                                     value="{columnModel>Additional_Value_Days}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Additional_Value_Days/visible}"
                                 />
                             </u:template>
@@ -813,6 +774,7 @@
                                 <Input
                                     id="Column_Input_Tax_Code"
                                     value="{columnModel>Input_Tax_Code}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Tax_Code/visible}"
                                 />
                             </u:template>
@@ -831,6 +793,7 @@
                                 <Input
                                     id="Column_Input_Withholding_Tax_Code"
                                     value="{columnModel>Withholding_Tax_Code}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Withholding_Tax_Code/visible}"
                                 />
                             </u:template>
@@ -849,6 +812,7 @@
                                 <Input
                                     id="Column_Input_Licence_No"
                                     value="{columnModel>Licence_No}"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Licence_No/visible}"
                                 />
                             </u:template>
@@ -869,6 +833,7 @@
                                     value="{columnModel>Licence_Date}"
                                     valueFormat="yyyy-MM-dd"
                                     displayFormat="dd-MM-yyyy"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Licence_Date/visible}"
                                 />
                             </u:template>
@@ -887,6 +852,7 @@
                                 <CheckBox
                                     id="Column_CheckBox_Deletion_Indictor"
                                     selected="false"
+                                    enabled="false"
                                     visible="{viewModel>/Column_Deletion_Indictor/visible}"
                                 />
                             </u:template>
