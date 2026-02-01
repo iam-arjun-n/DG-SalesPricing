@@ -621,7 +621,7 @@
                             <u:template>
                                 <CheckBox
                                     id="Column_CheckBox_Deletion"
-                                    selected="false"
+                                    selected="{columnModel>Deletion}"
                                     enabled="false"
                                     visible="{viewModel>/Column_Deletion/visible}"
                                 />
@@ -640,7 +640,7 @@
                             <u:template>
                                 <CheckBox
                                     id="Column_CheckBox_Condition_Supplement"
-                                    selected="false"
+                                    selected="{columnModel>Condition_Supplement}"
                                     enabled="false"
                                     visible="{viewModel>/Column_Condition_Supplement/visible}"
                                 />
@@ -659,7 +659,7 @@
                             <u:template>
                                 <CheckBox
                                     id="Column_CheckBox_Scales"
-                                    selected="false"
+                                    selected="{columnModel>Scales}"
                                     enabled="false"
                                     visible="{viewModel>/Column_Scales/visible}"
                                 />
@@ -678,7 +678,7 @@
                             <u:template>
                                 <CheckBox
                                     id="Column_CheckBox_Texts"
-                                    selected="false"
+                                    selected="{columnModel>Texts}"
                                     enabled="false"
                                     visible="{viewModel>/Column_Texts/visible}"
                                 />
@@ -851,7 +851,7 @@
                             <u:template>
                                 <CheckBox
                                     id="Column_CheckBox_Deletion_Indictor"
-                                    selected="false"
+                                    selected="{columnModel>Deletion_Indictor}"
                                     enabled="false"
                                     visible="{viewModel>/Column_Deletion_Indictor/visible}"
                                 />

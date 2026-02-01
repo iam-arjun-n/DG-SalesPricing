@@ -24,20 +24,21 @@ sap.ui.define([
 
                 this.getView().setModel(
                     new JSONModel({
-                        Sales_Organization: oFields.SalesOrganization || "",
-                        Distribution_Channel: oFields.DistributionChannel || "",
+                        Sales_Organization: oFields.Sales_Organization || "",
+                        Distribution_Channel: oFields.Distribution_Channel || "",
                         Customer: oFields.Customer || "",
                         Material: oFields.Material || "",
-                        Material_Price_Group: oFields.MaterialPriceGroup || "",
+                        Material_Price_Group: oFields.Material_Price_Group || "",
                         Division: oFields.Division || "",
-                        Departure_City_Region: oFields.DepartureCityRegion || "",
-                        Sold_To_Party: oFields.SoldToParty || "",
-                        Price_List_Type: oFields.PriceListType || "",
-                        Document_Currency: oFields.DocumentCurrency || "",
+                        Departure_City_Region: oFields.Departure_City_Region || "",
+                        Sold_To_Party: oFields.Sold_To_Party || "",
+                        Price_List_Type: oFields.Price_List_Type || "",
+                        Document_Currency: oFields.Document_Currency || "",
                         Supplier: oFields.Supplier || ""
                     }),
                     "fieldModel"
                 );
+
 
                 this.getView().setModel(
                     new JSONModel({
