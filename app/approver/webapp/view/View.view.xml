@@ -206,21 +206,7 @@
                                 id="View_Page_Title"
                                 text="Conditions"
                             />
-                            <ToolbarSpacer
-                                id="View_Page_ToolbarSpacer1"
-                            />
-                            <Button
-                                id="View_Page_Button_AddRow"
-                                icon="sap-icon://add"
-                                press="onAddRow"
-                                enabled="{viewModel>/addrowbtn}"
-                            />
-                            <Button
-                                id="View_Page_Button_DeleteRow"
-                                icon="sap-icon://delete"
-                                press="onDeleteRow"
-                            />
-                        </OverflowToolbar>
+                            </OverflowToolbar>
                     </u:extension>
 
                     <u:columns>
