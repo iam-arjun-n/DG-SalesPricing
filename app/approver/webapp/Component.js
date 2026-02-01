@@ -216,32 +216,181 @@ sap.ui.define([
             this._mergeComments();
         },
         _addApproveComment: async function () {
-    const comments = this.getModel("commentModel").getData() || [];
-    const newComments = comments.filter(c => c.IsNew);
-    if (!newComments.length) return;
+            const comments = this.getModel("commentModel").getData() || [];
+            const newComments = comments.filter(c => c.IsNew);
+            if (!newComments.length) return;
 
-    const base = this._getDatabaseBaseURL();
-    const token = await this._fetchCAPCsrf();
-    const requestId = this.getModel("request").getProperty("/reqId");
+            const base = this._getDatabaseBaseURL();
+            const token = await this._fetchCAPCsrf();
+            const requestId = this.getModel("request").getProperty("/reqId");
 
-    for (let c of newComments) {
-        await fetch(`${base}SalesPricingComments`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": token
-            },
-            body: JSON.stringify({
-                commentText: c.Text,
-                role: "Approver",
-                user: c.UserName,
-                request_requestId: requestId
-            }),
-            credentials: "include"
-        });
-    }
-},
+            for (let c of newComments) {
+                await fetch(`${base}SalesPricingComments`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-Token": token
+                    },
+                    body: JSON.stringify({
+                        commentText: c.Text,
+                        role: "Approver",
+                        user: c.UserName,
+                        request_requestId: requestId
+                    }),
+                    credentials: "include"
+                });
+            }
+        },
 
+        //Approve or Reject Functions
+        _getDatabaseBaseURL: function () {
+            const oModel = this.getModel("ServiceModel");
+            const sUrl =
+                oModel &&
+                (oModel.sServiceUrl ||
+                    oModel.oServiceUrl ||
+                    (oModel.getServiceUrl && oModel.getServiceUrl()));
+
+            if (!sUrl) {
+                throw new Error("ServiceModel service URL not found");
+            }
+
+            return sUrl.endsWith("/") ? sUrl : sUrl + "/";
+        },
+
+        async _fetchCAPCsrf() {
+            const base = this._getDatabaseBaseURL();
+            const res = await fetch(base, {
+                method: "GET",
+                headers: { "X-CSRF-Token": "Fetch" },
+                credentials: "include"
+            });
+
+            return res.headers.get("X-CSRF-Token");
+        },
+
+        _updateRequestStatus: async function (reqStatus, wfStatus) {
+
+            const base = this._getDatabaseBaseURL();
+            const requestId = this.getModel("request").getProperty("/reqId");
+            const token = await this._fetchCAPCsrf();
+
+            const payload = {
+                requestStatus: reqStatus,
+                workflowStatus: wfStatus
+            };
+
+            await fetch(`${base}SalesPricingRequests(requestId='${requestId}')`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-Token": token
+                },
+                body: JSON.stringify(payload),
+                credentials: "include"
+            });
+        },
+
+        _addApproveComment: async function () {
+
+            const comments = this.getModel("commentModel").getData() || [];
+            const newComments = comments.filter(c => c.IsNew);
+            if (!newComments.length) return;
+
+            const base = this._getDatabaseBaseURL();
+            const token = await this._fetchCAPCsrf();
+            const requestId = this.getModel("request").getProperty("/reqId");
+
+            for (let c of newComments) {
+                await fetch(`${base}SalesPricingComments`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-Token": token
+                    },
+                    body: JSON.stringify({
+                        commentText: c.Text,
+                        role: "Approver",
+                        user: c.UserName || "Approver",
+                        request_requestId: requestId
+                    }),
+                    credentials: "include"
+                });
+            }
+        },
+        _completeWorkflowTask: async function () {
+            const base = this._getWorkflowBaseURL();
+            const taskId = this.getModel("task").getData().InstanceID;
+
+            const res = await fetch(`${base}/task-instances/${taskId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ status: "COMPLETED" })
+            });
+
+            if (!res.ok) {
+                throw new Error("Workflow task completion failed");
+            }
+        },
+
+        // Posting
+        _onApprove: async function () {
+
+            const comments = this.getModel("commentModel")?.getData() ?? [];
+
+            if (!this._hasNewComment(comments)) {
+                sap.m.MessageBox.information("Please add a comment before approving.");
+                return;
+            }
+
+            try {
+                // (Optional) SAP posting – can be enabled later
+                // await this._postPricingDataToSAP();
+
+                // 1. Update CAP
+                await this._updateRequestStatus("Approved", "Completed");
+
+                // 2. Save comments
+                await this._addApproveComment();
+
+                // 3. Complete workflow
+                await this._completeWorkflowTask();
+
+                sap.m.MessageBox.success("Request approved.");
+                this._refreshInbox();
+
+            } catch (e) {
+                sap.m.MessageBox.error(e.message || "Approve failed");
+            }
+        },
+
+        _onReject: async function () {
+
+            const comments = this.getModel("commentModel")?.getData() ?? [];
+
+            if (!this._hasNewComment(comments)) {
+                sap.m.MessageBox.information("Please add a comment before rejecting.");
+                return;
+            }
+
+            try {
+                // 1. Update CAP
+                await this._updateRequestStatus("Rejected", "Rejected");
+
+                // 2. Save comments
+                await this._addApproveComment();
+
+                // 3. Complete workflow
+                await this._completeWorkflowTask();
+
+                sap.m.MessageBox.error("Request rejected.");
+                this._refreshInbox();
+
+            } catch (e) {
+                sap.m.MessageBox.error(e.message || "Reject failed");
+            }
+        },
 
     });
 });
