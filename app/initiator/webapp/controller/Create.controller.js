@@ -163,23 +163,40 @@ sap.ui.define([
             }
             const oToday = new Date();
             const sToday = oToday.toISOString().split("T")[0];
-
-            // Max valid-to date
             const sMaxDate = "9999-12-31";
 
 
             this._activeKeyCombination.fields.forEach(function (f) {
-                if (f.startsWith("Column_")) {
-                    var sProp = f.replace("Column_", "");
-
-                    if (sProp === "Valid_From") {
-                        oRow[sProp] = sToday;
-                    } else if (sProp === "Valid_To") {
-                        oRow[sProp] = sMaxDate;
-                    } else {
-                        oRow[sProp] = "";
-                    }
+                if (!f.startsWith("Column_")) {
+                    return;
                 }
+
+                var sProp = f.replace("Column_", "");
+
+                if (sProp === "Valid_From") {
+                    oRow[sProp] = sToday;
+                    return;
+                }
+
+                if (sProp === "Valid_To") {
+                    oRow[sProp] = sMaxDate;
+                    return;
+                }
+
+                const aBooleanFields = [
+                    "Deletion",
+                    "Condition_Supplement",
+                    "Scales",
+                    "Texts",
+                    "Deletion_Indictor"
+                ];
+
+                if (aBooleanFields.includes(sProp)) {
+                    oRow[sProp] = false;   
+                    return;
+                }
+
+                oRow[sProp] = "";
             });
 
             return oRow;
@@ -515,8 +532,8 @@ sap.ui.define([
                 success: function (oData) {
                     var aResults = oData.results.map(function (item) {
                         return {
-                            title: item.currency,                
-                            description: item.currency 
+                            title: item.currency,
+                            description: item.currency
                         };
                     });
                     var oF4Model = new sap.ui.model.json.JSONModel({
@@ -548,8 +565,8 @@ sap.ui.define([
                 success: function (oData) {
                     var aResults = oData.results.map(function (item) {
                         return {
-                            title: item.PriceListType,                
-                            description: item.PLTDescription 
+                            title: item.PriceListType,
+                            description: item.PLTDescription
                         };
                     });
                     var oF4Model = new sap.ui.model.json.JSONModel({
@@ -801,7 +818,7 @@ sap.ui.define([
                     Customer: this._resolveValue(oDraft, "Customer"),
                     Material: this._resolveValue(oDraft, "Material"),
                     Division: this._resolveValue(oDraft, "Division"),
-                    
+
                 }
             };
 
