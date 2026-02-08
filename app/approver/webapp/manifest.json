@@ -23,6 +23,13 @@
           "annotations": [],
           "odataVersion": "4.0"
         }
+      },
+      "SAPService": {
+        "uri": "/sap/opu/odata/sap/ZMDG_SLSPRICINGCONDITIONRECORD_SRV/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0"
+        }
       }
     }
   },
@@ -68,6 +75,13 @@
         "settings": {
           "operationMode": "Server",
           "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "SAPSalesModel": {
+        "dataSource": "SAPService",
+        "settings": {
+          "operationMode": "Server",
           "earlyRequests": true
         }
       }

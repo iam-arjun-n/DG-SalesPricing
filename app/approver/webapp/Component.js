@@ -346,7 +346,7 @@ sap.ui.define([
 
             try {
                 // (Optional) SAP posting – can be enabled later
-                // await this._postPricingDataToSAP();
+                const result = await this._sendDataToSAP();
 
                 // 1. Update CAP
                 await this._updateRequestStatus("Approved", "Completed");
@@ -356,6 +356,14 @@ sap.ui.define([
 
                 // 3. Complete workflow
                 await this._completeWorkflowTask();
+
+                if (!result.success) {
+                    sap.m.MessageBox.error(
+                        `SAP Posting Failed:\n${result.error}`,
+                        { title: "Posting Error" }
+                    );
+                    return;
+                }
 
                 sap.m.MessageBox.success("Request approved.");
                 this._refreshInbox();
@@ -390,6 +398,145 @@ sap.ui.define([
             } catch (e) {
                 sap.m.MessageBox.error(e.message || "Reject failed");
             }
+        },
+
+        //Posting 
+        _sendDataToSAP: async function () {
+
+            const rows =
+                this.getModel("submissionModel")
+                    .getProperty("/rows") || [];
+
+            try {
+                // Only CREATE supported now
+                return await this._createPricingConditionsInS4(rows);
+
+            } catch (e) {
+                return {
+                    success: false,
+                    error: e.message || "Unknown SAP Pricing error"
+                };
+            }
+        },
+
+        _createPricingConditionsInS4: function (rows) {
+            const oModel = this.getModel("SAPSalesModel");
+
+            return new Promise((resolve, reject) => {
+                let completed = 0;
+                const total = rows.length;
+                let failed = false;
+
+                const createdConditionRecords = [];
+
+                rows.forEach(row => {
+                    if (failed) {
+                        return;
+                    }
+
+                    const payload = this._buildPricingPayload(row);
+
+                    console.log("Posting Pricing Condition to SAP:", payload);
+
+                    oModel.create("/A_SlsPrcgConditionRecord", payload, {
+                        success: (oData) => {
+                            // SAP generates ConditionRecord
+                            if (oData?.ConditionRecord) {
+                                createdConditionRecords.push(oData.ConditionRecord);
+                            }
+
+                            completed++;
+
+                            if (completed === total) {
+                                resolve({
+                                    success: true,
+                                    createdConditionRecords
+                                });
+                            }
+                        },
+
+                        error: (oError) => {
+                            if (failed) {
+                                return;
+                            }
+                            failed = true;
+
+                            console.error("RAW SAP ERROR:", oError);
+
+                            let message = "Unknown SAP Pricing error";
+
+                            try {
+                                // Standard SAP Gateway error structure
+                                const response = JSON.parse(oError.responseText);
+
+                                message =
+                                    response?.error?.message?.value ||
+                                    response?.error?.innererror?.errordetails?.[0]?.message ||
+                                    message;
+
+                            } catch (e) {
+                                if (oError.message) {
+                                    message = oError.message;
+                                }
+                            }
+
+                            reject({
+                                success: false,
+                                error: message
+                            });
+                        }
+                    });
+                });
+            });
+        },
+        
+        _buildPricingPayload: function (row) {
+
+            const f = row.Data.Fields;
+
+            const payload = {
+                ConditionType: row.Data.ConditionType,
+
+                // --- Key fields (only if present) ---
+                SalesOrganization: f.Sales_Organization || undefined,
+                DistributionChannel: f.Distribution_Channel || undefined,
+                Customer: f.Customer || undefined,
+                Material: f.Material || undefined,
+                PriceListType: f.Price_List_Type || undefined,
+                Division: f.Division || undefined,
+                Supplier: f.Supplier || undefined,
+
+                // --- Amount ---
+                ConditionRateValue: f.Amount || f.ConditionRateValue,
+                TransactionCurrency: f.Document_Currency,
+
+                // --- Validity ---
+                ConditionValidityStartDate: this._formatDateToODataV2(f.Valid_From),
+                ConditionValidityEndDate: this._formatDateToODataV2(f.Valid_To),
+
+                // --- Deletion ---
+                ConditionIsDeleted: f.Deletion === true
+            };
+
+            // remove undefined keys (SAP hates them)
+            Object.keys(payload).forEach(
+                k => payload[k] === undefined && delete payload[k]
+            );
+
+            return payload;
+        },
+        _formatDateToODataV2: function (dateStr) {
+            if (!dateStr) return null;
+            const d = new Date(dateStr);
+            return `/Date(${d.getTime()})/`;
+        },
+
+        _refreshInbox: function () {
+            const startup = this.getComponentData().startupParameters;
+            startup?.inboxAPI?.updateTask(
+                "NA",
+                startup.taskModel.getData().InstanceID
+            );
         },
 
     });

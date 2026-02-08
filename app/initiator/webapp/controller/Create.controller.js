@@ -192,7 +192,7 @@ sap.ui.define([
                 ];
 
                 if (aBooleanFields.includes(sProp)) {
-                    oRow[sProp] = false;   
+                    oRow[sProp] = false;
                     return;
                 }
 
@@ -738,9 +738,19 @@ sap.ui.define([
 
         //Save Function
         _collectFields: function () {
-            return {
-                ...this.getView().getModel("fieldModel").getData()
-            };
+            const oFieldData = this.getView().getModel("fieldModel").getData();
+            const oViewModel = this.getView().getModel("viewModel").getData();
+
+            const result = {};
+
+            Object.keys(oFieldData).forEach(field => {
+                const vmKey = "Field_" + field;
+                if (oViewModel[vmKey]?.visible) {
+                    result[field] = oFieldData[field];
+                }
+            });
+
+            return result;
         },
 
         _collectColumns: function () {
@@ -748,7 +758,20 @@ sap.ui.define([
                 .getModel("columnModel")
                 .getProperty("/rows") || [];
 
-            return aRows.map(r => ({ ...r }));
+            const oViewModel = this.getView().getModel("viewModel").getData();
+
+            return aRows.map(row => {
+                const filteredRow = {};
+
+                Object.keys(row).forEach(col => {
+                    const vmKey = "Column_" + col;
+                    if (oViewModel[vmKey]?.visible) {
+                        filteredRow[col] = row[col];
+                    }
+                });
+
+                return filteredRow;
+            });
         },
 
         _resolveValue: function (draft, fieldName) {
@@ -817,8 +840,7 @@ sap.ui.define([
                     DistributionChannel: this._resolveValue(oDraft, "Distribution_Channel"),
                     Customer: this._resolveValue(oDraft, "Customer"),
                     Material: this._resolveValue(oDraft, "Material"),
-                    Division: this._resolveValue(oDraft, "Division"),
-
+                    Division: this._resolveValue(oDraft, "Division")
                 }
             };
 
@@ -828,6 +850,7 @@ sap.ui.define([
 
             MessageToast.show("Condition record added");
             this._resetAllModels();
+
             this.getOwnerComponent()
                 .getRouter()
                 .navTo("RouteSubmission", { request_type: "create" });
