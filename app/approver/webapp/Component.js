@@ -337,66 +337,82 @@ sap.ui.define([
         // Posting
         _onApprove: async function () {
 
-            const comments = this.getModel("commentModel")?.getData() ?? [];
-
-            if (!this._hasNewComment(comments)) {
-                sap.m.MessageBox.information("Please add a comment before approving.");
-                return;
-            }
+            const busy = this._getBusyDialog();
+            busy.open();
 
             try {
-                // (Optional) SAP posting – can be enabled later
+                const comments = this.getModel("commentModel")?.getData() ?? [];
+                if (!this._hasNewComment(comments)) {
+                    busy.close();
+                    sap.m.MessageBox.information("Please add a comment before approving.");
+                    return;
+                }
+
                 const result = await this._sendDataToSAP();
 
-                // 1. Update CAP
                 await this._updateRequestStatus("Approved", "Completed");
-
-                // 2. Save comments
                 await this._addApproveComment();
-
-                // 3. Complete workflow
                 await this._completeWorkflowTask();
 
+                busy.close();
+
                 if (!result.success) {
-                    sap.m.MessageBox.error(
-                        `SAP Posting Failed:\n${result.error}`,
-                        { title: "Posting Error" }
+                    this._openResultDialog(
+                        "Posting Failed",
+                        result.error,
+                        "Error"
                     );
                     return;
                 }
 
-                sap.m.MessageBox.success("Request approved.");
-                this._refreshInbox();
+                this._openResultDialog(
+                    "Approved",
+                    "Sales Pricing condition records were created successfully.",
+                    "Success"
+                );
 
             } catch (e) {
-                sap.m.MessageBox.error(e.message || "Approve failed");
+                busy.close();
+                this._openResultDialog(
+                    "Error",
+                    e.message || "Unexpected error occurred",
+                    "Error"
+                );
             }
         },
 
         _onReject: async function () {
 
-            const comments = this.getModel("commentModel")?.getData() ?? [];
-
-            if (!this._hasNewComment(comments)) {
-                sap.m.MessageBox.information("Please add a comment before rejecting.");
-                return;
-            }
+            const busy = this._getBusyDialog();
+            busy.open();
 
             try {
-                // 1. Update CAP
+                const comments = this.getModel("commentModel")?.getData() ?? [];
+                if (!this._hasNewComment(comments)) {
+                    busy.close();
+                    sap.m.MessageBox.information("Please add a comment before rejecting.");
+                    return;
+                }
+
                 await this._updateRequestStatus("Rejected", "Rejected");
-
-                // 2. Save comments
                 await this._addApproveComment();
-
-                // 3. Complete workflow
                 await this._completeWorkflowTask();
 
-                sap.m.MessageBox.error("Request rejected.");
-                this._refreshInbox();
+                busy.close();
+
+                this._openResultDialog(
+                    "Rejected",
+                    "The request has been rejected successfully.",
+                    "Warning"
+                );
 
             } catch (e) {
-                sap.m.MessageBox.error(e.message || "Reject failed");
+                busy.close();
+                this._openResultDialog(
+                    "Error",
+                    e.message || "Reject failed",
+                    "Error"
+                );
             }
         },
 
@@ -424,101 +440,85 @@ sap.ui.define([
 
             return new Promise((resolve, reject) => {
                 let completed = 0;
-                const total = rows.length;
                 let failed = false;
-
-                const createdConditionRecords = [];
+                const total = rows.length;
 
                 rows.forEach(row => {
-                    if (failed) {
-                        return;
-                    }
+                    if (failed) return;
 
                     const payload = this._buildPricingPayload(row);
 
-                    console.log("Posting Pricing Condition to SAP:", payload);
-
                     oModel.create("/A_SlsPrcgConditionRecord", payload, {
                         success: (oData) => {
-                            // SAP generates ConditionRecord
-                            if (oData?.ConditionRecord) {
-                                createdConditionRecords.push(oData.ConditionRecord);
-                            }
-
                             completed++;
-
                             if (completed === total) {
                                 resolve({
                                     success: true,
-                                    createdConditionRecords
+                                    createdConditionRecords: rows.length
                                 });
                             }
                         },
-
                         error: (oError) => {
-                            if (failed) {
-                                return;
-                            }
                             failed = true;
 
-                            console.error("RAW SAP ERROR:", oError);
-
-                            let message = "Unknown SAP Pricing error";
-
+                            let msg = "SAP Pricing error";
                             try {
-                                // Standard SAP Gateway error structure
-                                const response = JSON.parse(oError.responseText);
+                                const r = JSON.parse(oError.responseText);
+                                msg =
+                                    r?.error?.message?.value ||
+                                    r?.error?.innererror?.errordetails?.[0]?.message ||
+                                    msg;
+                            } catch (e) { }
 
-                                message =
-                                    response?.error?.message?.value ||
-                                    response?.error?.innererror?.errordetails?.[0]?.message ||
-                                    message;
-
-                            } catch (e) {
-                                if (oError.message) {
-                                    message = oError.message;
-                                }
-                            }
-
-                            reject({
-                                success: false,
-                                error: message
-                            });
+                            reject({ success: false, error: msg });
                         }
                     });
                 });
             });
         },
-        
+
+
         _buildPricingPayload: function (row) {
 
-            const f = row.Data.Fields;
+            const f = row.Data.Fields || {};
+            const c = (row.Data.Columns && row.Data.Columns[0]) || {};
 
             const payload = {
+                // Mandatory
                 ConditionType: row.Data.ConditionType,
 
-                // --- Key fields (only if present) ---
-                SalesOrganization: f.Sales_Organization || undefined,
-                DistributionChannel: f.Distribution_Channel || undefined,
-                Customer: f.Customer || undefined,
-                Material: f.Material || undefined,
-                PriceListType: f.Price_List_Type || undefined,
-                Division: f.Division || undefined,
-                Supplier: f.Supplier || undefined,
+                // --- Header / Key fields (send everything) ---
+                SalesOrganization: f.Sales_Organization,
+                DistributionChannel: f.Distribution_Channel,
+                Division: f.Division,
+                Customer: f.Customer,
+                SoldToParty: f.Sold_To_Party,
+                Material: f.Material,
+                MaterialGroup: f.Material_Group,
+                PriceListType: f.Price_List_Type,
+                Supplier: f.Supplier,
+                CustomerGroup: f.Customer_Group,
+                SalesOffice: f.Sales_Office,
+                SalesGroup: f.Sales_Group,
 
-                // --- Amount ---
-                ConditionRateValue: f.Amount || f.ConditionRateValue,
-                TransactionCurrency: f.Document_Currency,
+                // --- Amount / Currency ---
+                ConditionRateValue: c.Amount || f.Amount,
+                TransactionCurrency: f.Document_Currency || c.Currency,
+                ConditionQuantity: c.Per || 1,
+                ConditionQuantityUnit: c.UoM,
 
                 // --- Validity ---
-                ConditionValidityStartDate: this._formatDateToODataV2(f.Valid_From),
-                ConditionValidityEndDate: this._formatDateToODataV2(f.Valid_To),
+                ConditionValidityStartDate: this._formatDateToODataV2(
+                    c.Valid_From || f.Valid_From
+                ),
+                ConditionValidityEndDate: this._formatDateToODataV2(
+                    c.Valid_To || f.Valid_To
+                ),
 
-                // --- Deletion ---
+                // --- Optional flags ---
                 ConditionIsDeleted: f.Deletion === true
             };
 
-            // remove undefined keys (SAP hates them)
             Object.keys(payload).forEach(
                 k => payload[k] === undefined && delete payload[k]
             );
@@ -537,6 +537,43 @@ sap.ui.define([
                 "NA",
                 startup.taskModel.getData().InstanceID
             );
+        },
+
+        _getBusyDialog: function () {
+            if (!this._busyDialog) {
+                this._busyDialog = new sap.m.BusyDialog({
+                    title: "Processing",
+                    text: "Please wait while the request is being processed..."
+                });
+            }
+            return this._busyDialog;
+        },
+
+        _openResultDialog: function (title, message, state) {
+
+            if (!this._resultDialog) {
+                this._resultDialog = sap.ui.xmlfragment(
+                    "com.deloitte.mdg.salepricing.approver.approver.view.fragments.ResultDialog",
+                    this
+                );
+                this.getRootControl().addDependent(this._resultDialog);
+            }
+
+            const oModel = new sap.ui.model.json.JSONModel({
+                title,
+                message,
+                state
+            });
+
+            this._resultDialog.setModel(oModel, "result");
+            this._resultDialog.open();
+        },
+
+        onResultDialogClose: function () {
+            if (this._resultDialog) {
+                this._resultDialog.close();
+            }
+            window.location.reload();
         },
 
     });
