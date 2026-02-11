@@ -25,7 +25,7 @@
         }
       },
       "SAPService": {
-        "uri": "/sap/opu/odata/sap/ZMDG_SLSPRICINGCONDITIONRECORD_SRV/",
+        "uri": "/sap/opu/odata/sap/API_SLSPRICINGCONDITIONRECORD_SRV/",
         "type": "OData",
         "settings": {
           "odataVersion": "2.0"
