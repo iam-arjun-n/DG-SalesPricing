@@ -379,7 +379,7 @@ sap.ui.define([
 
                 this._openResultDialog(
                     "Approved",
-                    "Sales Pricing condition records were created successfully.",
+                    `Condition record(s) created successfully:\n${result.createdRecords.join(", ")}`,
                     "Success"
                 );
 
@@ -477,26 +477,26 @@ sap.ui.define([
         },
         _createPricingConditions: async function (rows) {
 
+            const created = [];
             const failures = [];
 
             for (const row of rows) {
                 try {
-                    await this._createSinglePricingCondition(row);
+                    const result = await this._createSinglePricingCondition(row);
+                    created.push(result.conditionRecord);
                 } catch (e) {
-                    failures.push({
-                        conditionType: row.Data.ConditionType,
-                        error: e.message
-                    });
+                    failures.push(e.message);
                 }
             }
 
             if (failures.length) {
-                throw new Error(
-                    failures.map(f => `${f.conditionType}: ${f.error}`).join("\n")
-                );
+                throw new Error(failures.join("\n"));
             }
 
-            return { success: true };
+            return {
+                success: true,
+                createdRecords: created
+            };
         },
 
         _getPB00ConditionTable: function (keyCombinationId) {
@@ -517,47 +517,47 @@ sap.ui.define([
 
         _buildKeyPayload: function (keyCombinationId, fields, columns) {
 
-    const keyMap = {
-        CUST_MAT: [
-            "Sales_Organization",
-            "Distribution_Channel",
-            "Customer",
-            "Material"
-        ],
-        PB00_VEN_MAT: [
-            "Supplier",
-            "Material"
-        ],
-        SALE_SOLD_MAT_CUST: [
-            "Sales_Organization",
-            "Sold_To_Party",
-            "Material"
-        ],
-        SALE_DIST_MAT_CUST: [
-            "Sales_Organization",
-            "Distribution_Channel",
-            "Material",
-            "Customer"
-        ]
-    };
+            const keyMap = {
+                CUST_MAT: [
+                    "Sales_Organization",
+                    "Distribution_Channel",
+                    "Customer",
+                    "Material"
+                ],
+                PB00_VEN_MAT: [
+                    "Supplier",
+                    "Material"
+                ],
+                SALE_SOLD_MAT_CUST: [
+                    "Sales_Organization",
+                    "Sold_To_Party",
+                    "Material"
+                ],
+                SALE_DIST_MAT_CUST: [
+                    "Sales_Organization",
+                    "Distribution_Channel",
+                    "Material",
+                    "Customer"
+                ]
+            };
 
-    const payload = {};
+            const payload = {};
 
-    const keys = keyMap[keyCombinationId] || [];
+            const keys = keyMap[keyCombinationId] || [];
 
-    keys.forEach(k => {
-        const value = fields[k] || columns[k];
+            keys.forEach(k => {
+                const value = fields[k] || columns[k];
 
-        if (value !== undefined && value !== null && value !== "") {
-            const sapName = this._mapFieldName(k);
-            if (sapName) {
-                payload[sapName] = value;
-            }
-        }
-    });
+                if (value !== undefined && value !== null && value !== "") {
+                    const sapName = this._mapFieldName(k);
+                    if (sapName) {
+                        payload[sapName] = value;
+                    }
+                }
+            });
 
-    return payload;
-},
+            return payload;
+        },
         _createSinglePricingCondition: function (row) {
 
             return new Promise((resolve, reject) => {
@@ -601,7 +601,15 @@ sap.ui.define([
                     "/A_SlsPrcgConditionRecord",
                     payload,
                     {
-                        success: resolve,
+                        success: function (oData) {
+
+                            console.log("SAP RESPONSE:", oData);
+
+                            resolve({
+                                success: true,
+                                conditionRecord: oData.ConditionRecord
+                            });
+                        },
                         error: (oError) => {
                             let msg = "Condition creation failed";
                             try {
