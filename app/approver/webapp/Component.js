@@ -350,6 +350,18 @@ sap.ui.define([
 
                 const result = await this._sendDataToSAP();
 
+                if (!result.success) {
+                    busy.close();
+
+                    this._openResultDialog(
+                        "Posting Failed",
+                        result.error || "Condition record creation failed in SAP.",
+                        "Error"
+                    );
+
+                    return;
+                }
+
                 await this._updateRequestStatus("Approved", "Completed");
                 await this._addApproveComment();
                 await this._completeWorkflowTask();
@@ -487,64 +499,121 @@ sap.ui.define([
             return { success: true };
         },
 
+        _getPB00ConditionTable: function (keyCombinationId) {
+
+            const map = {
+                SALE_SOLD_MAT_CUST: "304",
+                SALE_CUST_MAT_ROLE: "312",
+                CUST_MAT: "305",
+                SALE_DIST_MAT_CUST: "305",
+                PB00_PRICE_CUR_MAT: "020",
+                PB00_MAT: "003",
+                PB00_SALE_DIST_MAT: "306",
+                PB00_VEN_MAT: "017"
+            };
+
+            return map[keyCombinationId];
+        },
+
+        _buildKeyPayload: function (keyCombinationId, fields, columns) {
+
+    const keyMap = {
+        CUST_MAT: [
+            "Sales_Organization",
+            "Distribution_Channel",
+            "Customer",
+            "Material"
+        ],
+        PB00_VEN_MAT: [
+            "Supplier",
+            "Material"
+        ],
+        SALE_SOLD_MAT_CUST: [
+            "Sales_Organization",
+            "Sold_To_Party",
+            "Material"
+        ],
+        SALE_DIST_MAT_CUST: [
+            "Sales_Organization",
+            "Distribution_Channel",
+            "Material",
+            "Customer"
+        ]
+    };
+
+    const payload = {};
+
+    const keys = keyMap[keyCombinationId] || [];
+
+    keys.forEach(k => {
+        const value = fields[k] || columns[k];
+
+        if (value !== undefined && value !== null && value !== "") {
+            const sapName = this._mapFieldName(k);
+            if (sapName) {
+                payload[sapName] = value;
+            }
+        }
+    });
+
+    return payload;
+},
         _createSinglePricingCondition: function (row) {
 
-    return new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
 
-        const f = row.Data.Fields || {};
-        const c = row.Data.Columns?.[0] || {};
+                const f = row.Data.Fields || {};
+                const c = row.Data.Columns?.[0] || {};
+                const keyId = row.Data.KeyCombinationId;
 
-        const table = this._resolveConditionTable(
-            row.Data.ConditionType,
-            row.Data.KeyCombinationId
-        );
+                const table = this._getPB00ConditionTable(keyId);
 
-        const keyPayload = {};
-        this._getTableKeyFields(table).forEach(k => {
-            const mapped = this._mapFieldName(k);
-            if (mapped && (f[k] || c[k])) {
-                keyPayload[mapped] = f[k] || c[k];
-            }
-        });
-
-        const payload = {
-            ConditionType: row.Data.ConditionType,
-            ConditionApplication: "V",
-            ConditionTable: table,
-
-            ConditionRateValue: parseFloat(c.Amount).toFixed(3),
-            ConditionRateValueUnit: c.Unit,
-            ConditionQuantity: "1",
-            ConditionQuantityUnit: c.UoM || "EA",
-
-            to_SlsPrcgCndnRecdValidity: {
-                results: [{
-                    ConditionValidityStartDate: this._formatDateToODataV2(c.Valid_From),
-                    ConditionValidityEndDate: this._formatDateToODataV2(c.Valid_To),
-                    ...keyPayload
-                }]
-            }
-        };
-
-        console.log("Final Deep Insert Payload:");
-        console.log(JSON.stringify(payload, null, 2));
-
-        this.getModel("SAPSalesModel").create(
-            "/A_SlsPrcgConditionRecord",
-            payload,
-            {
-                success: resolve,
-                error: function (oError) {
-                    const msg =
-                        oError?.responseText
-                            ? JSON.parse(oError.responseText)?.error?.message?.value
-                            : "Condition record creation failed";
-                    reject(new Error(msg));
+                if (!table) {
+                    reject(new Error("No condition table found"));
+                    return;
                 }
-            }
-        );
-    });
-},
+
+                const keyPayload = this._buildKeyPayload(keyId, f, c);
+
+                const payload = {
+                    ConditionTable: table,
+                    ConditionApplication: "V",
+                    ConditionType: "PB00",
+
+                    ConditionRateValue: parseFloat(c.Amount).toFixed(3),
+                    ConditionRateValueUnit: c.Unit,
+                    ConditionQuantity: "1",
+                    ConditionQuantityUnit: c.UoM || "EA",
+
+                    to_SlsPrcgCndnRecdValidity: {
+                        results: [{
+                            ConditionValidityStartDate: this._formatDateToODataV2(c.Valid_From),
+                            ConditionValidityEndDate: this._formatDateToODataV2(c.Valid_To),
+                            ...keyPayload
+                        }]
+                    }
+                };
+
+                console.log("FINAL PAYLOAD:");
+                console.log(JSON.stringify(payload, null, 2));
+
+                this.getModel("SAPSalesModel").create(
+                    "/A_SlsPrcgConditionRecord",
+                    payload,
+                    {
+                        success: resolve,
+                        error: (oError) => {
+                            let msg = "Condition creation failed";
+                            try {
+                                const response = JSON.parse(oError.responseText);
+                                msg = response?.error?.message?.value || msg;
+                            } catch (e) { }
+                            reject(new Error(msg));
+                        }
+                    }
+                );
+            });
+        },
 
         _refreshSAPCsrf: function () {
             return new Promise((resolve, reject) => {
@@ -555,17 +624,32 @@ sap.ui.define([
                 );
             });
         },
+        _getPB00ConditionTable: function (keyCombinationId) {
+
+            const map = {
+                SALE_SOLD_MAT_CUST: "304",
+                SALE_CUST_MAT_ROLE: "312",
+                CUST_MAT: "305",
+                SALE_DIST_MAT_CUST: "305",
+                PB00_PRICE_CUR_MAT: "020",
+                PB00_MAT: "003",
+                PB00_SALE_DIST_MAT: "306",
+                PB00_VEN_MAT: "950"
+            };
+
+            return map[keyCombinationId];
+        },
 
         _getTableKeyFields: function (table) {
             const tableKeys = {
                 "304": ["Sales_Organization", "Distribution_Channel", "Customer", "Material"],
                 "312": ["Sales_Organization", "Customer", "Material"],
                 "305": ["Sales_Organization", "Distribution_Channel", "Customer", "Material"],
-                "004": ["Customer", "Material"],
+                "005": ["Customer", "Material"],
                 "003": ["Material"],
-                "020": ["Price_List_Type", "Material"],
+                "006": ["Price_List_Type", "Material"],
                 "306": ["Sales_Organization", "Distribution_Channel", "Material"],
-                "017": ["Supplier", "Material"]
+                "950": ["Supplier", "Material"]
             };
             return tableKeys[table] || [];
         },
@@ -583,8 +667,6 @@ sap.ui.define([
             };
             return map[field];
         },
-
-
 
         _formatDateToODataV2: function (dateStr) {
             if (!dateStr) {
