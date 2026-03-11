@@ -80,6 +80,20 @@
                         visible="{viewModel>/Field_Customer/visible}"
                     />
                     <Label
+                        id="Field_WBS_Label"
+                        text="WBS Element"
+                        labelFor="Field_WBS_Input"
+                        required="true"
+                        visible="{viewModel>/Field_WBS/visible}"
+                    />
+                    <Input
+                        id="Field_WBS_Input"
+                        value="{fieldModel>/WBS}"
+                        enabled="false"
+                        visible="{viewModel>/Field_WBS/visible}"
+                    />
+                    
+                    <Label
                         id="Field_Material_Label"
                         text="Material"
                         labelFor="Field_Material_Input"
@@ -287,6 +301,84 @@
                             </u:template>
                         </u:Column>
                         <u:Column
+                            id="Column_Sales_Organization"
+                            width="8rem"
+                            visible="{viewModel>/Column_Sales_Organization/visible}"
+                        >
+                            <Label
+                                id="Column_Label_Sales_Organization"
+                                text="Sales Organization"
+                                visible="{viewModel>/Column_Sales_Organization/visible}"
+                            />
+                            <u:template>
+                                <Input
+                                    id="Column_Input_Sales_Organization"
+                                    value="{columnModel>Sales_Organization}"
+                                    enabled="false"
+                                    visible="{viewModel>/Column_Sales_Organization/visible}"
+                                />
+                            </u:template>
+                        </u:Column>
+                        
+                        <u:Column
+                            id="Column_Usage"
+                            width="8rem"
+                            visible="{viewModel>/Column_Usage/visible}"
+                        >
+                            <Label
+                                id="Column_Label_Usage"
+                                text="Usage"
+                                visible="{viewModel>/Column_Usage/visible}"
+                            />
+                            <u:template>
+                                <Input
+                                    id="Column_Input_Usage"
+                                    value="{columnModel>Usage}"
+                                    enabled="false"
+                                    visible="{viewModel>/Column_Usage/visible}"
+                                />
+                            </u:template>
+                        </u:Column>
+                        <u:Column
+                            id="Column_Personnel"
+                            width="10rem"
+                            visible="{viewModel>/Column_Personnel/visible}"
+                        >
+                            <Label
+                                id="Column_Label_Personnel"
+                                text="Personnel Number"
+                                visible="{viewModel>/Column_Personnel/visible}"
+                            />
+                            <u:template>
+                                <Input
+                                    id="Column_Input_Personnel"
+                                    value="{columnModel>Personnel}"
+                                    enabled="false"
+                                    visible="{viewModel>/Column_Personnel/visible}"
+                                />
+                            </u:template>
+                        </u:Column>
+                        <u:Column
+                            id="Column_Order_Reason"
+                            width="8rem"
+                            visible="{viewModel>/Column_Order_Reason/visible}"
+                        >
+                            <Label
+                                id="Column_Label_Order_Reason"
+                                text="Order Reason"
+                                visible="{viewModel>/Column_Order_Reason/visible}"
+                            />
+                            <u:template>
+                                <Input
+                                    id="Column_Input_Order_Reason"
+                                    value="{columnModel>Order_Reason}"
+                                    enabled="false"
+                                    visible="{viewModel>/Column_Order_Reason/visible}"
+                                />
+                            </u:template>
+                        </u:Column>
+                        
+                        <u:Column
                             id="Column_Status"
                             width="4rem"
                             visible="{viewModel>/Column_Status/visible}"
@@ -419,6 +511,26 @@
                                 />
                             </u:template>
                         </u:Column>
+                        <u:Column
+                            id="Column_WBS"
+                            width="5rem"
+                            visible="{viewModel>/Column_WBS/visible}"
+                        >
+                            <Label
+                                id="Column_Label_WBS"
+                                text="WBS Element"
+                                visible="{viewModel>/Column_WBS/visible}"
+                            />
+                            <u:template>
+                                <Input
+                                    id="Column_Input_WBS"
+                                    value="{columnModel>WBS}"
+                                    enabled="false"
+                                    visible="{viewModel>/Column_WBS/visible}"
+                                />
+                            </u:template>
+                        </u:Column>
+                        
                         <u:Column
                             id="Column_Partner_Role"
                             width="8rem"

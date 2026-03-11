@@ -34,7 +34,8 @@ sap.ui.define([
                         Sold_To_Party: oFields.Sold_To_Party || "",
                         Price_List_Type: oFields.Price_List_Type || "",
                         Document_Currency: oFields.Document_Currency || "",
-                        Supplier: oFields.Supplier || ""
+                        Supplier: oFields.Supplier || "",
+                        WBS: oFields.WBS || ""
                     }),
                     "fieldModel"
                 );
@@ -71,9 +72,15 @@ sap.ui.define([
                     "Field_Price_List_Type",
                     "Field_Document_Currency",
                     "Field_Supplier",
+                    "Field_WBS",
                     "Column_Material",
                     "Column_Material_Group",
                     "Column_Plant",
+                    "Column_Sales_Organization",
+                    "Column_Usage",
+                    "Column_Personnel",
+                    "Column_Order_Reason",
+                    "Column_WBS",
                     "Column_Status",
                     "Column_Price_Group",
                     "Column_Departure_City_Region",

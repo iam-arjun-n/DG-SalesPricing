@@ -19,6 +19,7 @@ sap.ui.define([
                 Sales_Organization: "",
                 Distribution_Channel: "",
                 Customer: "",
+                WBS:"",
                 Material: "",
                 Material_Price_Group: "",
                 Division: "",
@@ -47,6 +48,7 @@ sap.ui.define([
 
             var oViewModel = new JSONModel({
                 Field_Sales_Organization: { visible: false },
+                Field_WBS: { visible: false },
                 Field_Distribution_Channel: { visible: false },
                 Field_Customer: { visible: false },
                 Field_Material: { visible: false },
@@ -57,10 +59,13 @@ sap.ui.define([
                 Field_Price_List_Type: { visible: false },
                 Field_Document_Currency: { visible: false },
                 Field_Supplier: { visible: false },
-
+                Column_Sales_Organization: { visible: false },
                 Column_Material: { visible: false },
                 Column_Material_Group: { visible: false },
                 Column_Plant: { visible: false },
+                Column_Usage: { visible: false },
+                Column_Personnel: { visible: false },
+                Column_Order_Reason: { visible: false },
                 Column_Status: { visible: false },
                 Column_Price_Group: { visible: false },
                 Column_Departure_City_Region: { visible: false },
@@ -85,6 +90,7 @@ sap.ui.define([
                 Column_Payment_Terms: { visible: false },
                 Column_Fixed_Value_Date: { visible: false },
                 Column_Additional_Value_Days: { visible: false },
+                Column_WBS: { visible: false },
                 Column_Customer: { visible: false },
                 Column_Tax_Code: { visible: false },
                 Column_Withholding_Tax_Code: { visible: false },
@@ -830,7 +836,6 @@ sap.ui.define([
 
             const oDraft = oDraftModel.getData();
             const oSubmissionModel = this.getOwnerComponent().getModel("submissionModel");
-
             const entry = {
                 Data: JSON.parse(JSON.stringify(oDraft)),
                 Display: {

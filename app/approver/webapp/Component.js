@@ -449,32 +449,6 @@ sap.ui.define([
             }
         },
 
-
-        _resolveConditionTable: function (conditionType, keyCombinationId) {
-
-            const map = {
-                PB00: {
-                    SALE_SOLD_MAT_CUST: "304",      // A304
-                    SALE_CUST_MAT_ROLE: "312",     // A312
-                    CUST_MAT: "004",               // A004
-                    SALE_DIST_MAT_CUST: "305",     // A305
-                    PB00_PRICE_CUR_MAT: "020",     // A020
-                    PB00_MAT: "003",               // A003
-                    PB00_SALE_DIST_MAT: "306",     // A306
-                    PB00_VEN_MAT: "017"            // A017
-                }
-            };
-
-            const table = map?.[conditionType]?.[keyCombinationId];
-
-            if (!table) {
-                throw new Error(
-                    `No condition table found for ${conditionType} / ${keyCombinationId}`
-                );
-            }
-
-            return table;
-        },
         _createPricingConditions: async function (rows) {
 
             const created = [];
@@ -499,65 +473,37 @@ sap.ui.define([
             };
         },
 
-        _getPB00ConditionTable: function (keyCombinationId) {
 
-            const map = {
-                SALE_SOLD_MAT_CUST: "304",
-                SALE_CUST_MAT_ROLE: "312",
-                CUST_MAT: "305",
-                SALE_DIST_MAT_CUST: "305",
-                PB00_PRICE_CUR_MAT: "020",
-                PB00_MAT: "003",
-                PB00_SALE_DIST_MAT: "306",
-                PB00_VEN_MAT: "017"
-            };
+        _buildKeyPayload: function (conditionType, keyCombinationId, fields, columns) {
 
-            return map[keyCombinationId];
-        },
-
-        _buildKeyPayload: function (keyCombinationId, fields, columns) {
-
-            const keyMap = {
-                CUST_MAT: [
-                    "Sales_Organization",
-                    "Distribution_Channel",
-                    "Customer",
-                    "Material"
-                ],
-                PB00_VEN_MAT: [
-                    "Supplier",
-                    "Material"
-                ],
-                SALE_SOLD_MAT_CUST: [
-                    "Sales_Organization",
-                    "Sold_To_Party",
-                    "Material"
-                ],
-                SALE_DIST_MAT_CUST: [
-                    "Sales_Organization",
-                    "Distribution_Channel",
-                    "Material",
-                    "Customer"
-                ]
-            };
+            const keys = this._getKeyFields(conditionType, keyCombinationId);
 
             const payload = {};
 
-            const keys = keyMap[keyCombinationId] || [];
-
             keys.forEach(k => {
-                const value = fields[k] || columns[k];
+
+                let cleanField = k.replace("Field_", "").replace("Column_", "");
+
+                let value = fields?.[cleanField];
+
+                if (value === undefined || value === null || value === "") {
+                    value = columns?.[cleanField];
+                }
 
                 if (value !== undefined && value !== null && value !== "") {
-                    const sapName = this._mapFieldName(k);
+
+                    const sapName = this._mapFieldName(cleanField);
+
                     if (sapName) {
                         payload[sapName] = value;
                     }
                 }
+
             });
 
             return payload;
         },
+
         _createSinglePricingCondition: function (row) {
 
             return new Promise((resolve, reject) => {
@@ -565,20 +511,25 @@ sap.ui.define([
                 const f = row.Data.Fields || {};
                 const c = row.Data.Columns?.[0] || {};
                 const keyId = row.Data.KeyCombinationId;
+                const conditionType = row.Data.ConditionType;
 
-                const table = this._getPB00ConditionTable(keyId);
+                const table = this._getConditionTable(conditionType, keyId);
 
                 if (!table) {
                     reject(new Error("No condition table found"));
                     return;
                 }
-
-                const keyPayload = this._buildKeyPayload(keyId, f, c);
+                const keyPayload = this._buildKeyPayload(
+                    conditionType,
+                    keyId,
+                    f,
+                    c
+                );
 
                 const payload = {
                     ConditionTable: table,
                     ConditionApplication: "V",
-                    ConditionType: "PB00",
+                    ConditionType: conditionType,
 
                     ConditionRateValue: parseFloat(c.Amount).toFixed(3),
                     ConditionRateValueUnit: c.Unit,
@@ -632,36 +583,126 @@ sap.ui.define([
                 );
             });
         },
-        _getPB00ConditionTable: function (keyCombinationId) {
+        _getKeyFields: function (conditionType, keyCombinationId) {
 
             const map = {
-                SALE_SOLD_MAT_CUST: "304",
-                SALE_CUST_MAT_ROLE: "312",
-                CUST_MAT: "305",
-                SALE_DIST_MAT_CUST: "305",
-                PB00_PRICE_CUR_MAT: "020",
-                PB00_MAT: "003",
-                PB00_SALE_DIST_MAT: "306",
-                PB00_VEN_MAT: "950"
+
+                PB00: {
+
+                    CUST_MAT: [
+                        "Field_Sales_Organization",
+                        "Field_Distribution_Channel",
+                        "Field_Customer",
+                        "Column_Material"
+                    ],
+
+                    PB00_VEN_MAT: [
+                        "Field_Supplier",
+                        "Column_Material"
+                    ],
+
+                    SALE_SOLD_MAT_CUST: [
+                        "Field_Sales_Organization",
+                        "Field_Sold_To_Party",
+                        "Column_Material"
+                    ],
+
+                    SALE_DIST_MAT_CUST: [
+                        "Field_Sales_Organization",
+                        "Field_Distribution_Channel",
+                        "Column_Material",
+                        "Column_Customer"
+                    ]
+                },
+
+                PR00: {
+
+                    PR00_CUST_MAT: [
+                        "Field_Sales_Organization",
+                        "Field_Distribution_Channel",
+                        "Field_Customer"
+                    ],
+
+                    PR00_PRI_CUR_MAT: [
+                        "Field_Sales_Organization",
+                        "Field_Distribution_Channel",
+                        "Field_Price_List_Type",
+                        "Field_Document_Currency"
+                    ],
+
+                    PR00_SAL_DIS_DIV_PLT_MAT: [
+                        "Field_Sales_Organization",
+                        "Field_Distribution_Channel",
+                        "Field_Division"
+                    ],
+
+                    PR00_MAT: [
+                        "Field_Sales_Organization",
+                        "Field_Distribution_Channel"
+                    ],
+
+                    PR00_SAL_DIS_MAT_USA: [
+                        "Field_Sales_Organization",
+                        "Field_Distribution_Channel",
+                        "Field_Material"
+                    ],
+
+                    PR00_SAL_MAT_CUS_WBS: [],
+
+                    PR00_CUS_WBS_PER: [
+                        "Field_Customer",
+                        "Field_WBS"
+                    ],
+
+                    PR00_SAL_DIS_CUS_MAT_ORD: [
+                        "Field_Sales_Organization",
+                        "Field_Distribution_Channel",
+                        "Field_Customer",
+                        "Field_Material"
+                    ]
+                }
             };
 
-            return map[keyCombinationId];
+            return map?.[conditionType]?.[keyCombinationId] || [];
         },
+        _getConditionTable: function (conditionType, keyCombinationId) {
 
-        _getTableKeyFields: function (table) {
-            const tableKeys = {
-                "304": ["Sales_Organization", "Distribution_Channel", "Customer", "Material"],
-                "312": ["Sales_Organization", "Customer", "Material"],
-                "305": ["Sales_Organization", "Distribution_Channel", "Customer", "Material"],
-                "005": ["Customer", "Material"],
-                "003": ["Material"],
-                "006": ["Price_List_Type", "Material"],
-                "306": ["Sales_Organization", "Distribution_Channel", "Material"],
-                "950": ["Supplier", "Material"]
+            const map = {
+
+                PB00: {
+                    SALE_SOLD_MAT_CUST: "583",
+                    SALE_CUST_MAT_ROLE: "581",
+                    CUST_MAT: "305",
+                    SALE_DIST_MAT_CUST: "903",
+                    PB00_PRICE_CUR_MAT: "306",
+                    PB00_MAT: "304",
+                    PB00_SALE_DIST_MAT: "079",
+                    PB00_VEN_MAT: "950"
+                },
+
+                PR00: {
+                    PR00_CUST_MAT: "005",
+                    PR00_PRI_CUR_MAT: "006",
+                    PR00_SAL_DIS_DIV_PLT_MAT: "9FD",
+                    PR00_MAT: "004",
+                    PR00_SAL_DIS_MAT_USA: "545",
+                    PR00_SAL_MAT_CUS_WBS: "9BC",
+                    PR00_CUS_WBS_PER: "606",
+                    PR00_SAL_DIS_CUS_MAT_ORD: "956"
+                }
+
             };
-            return tableKeys[table] || [];
-        },
 
+            const table = map?.[conditionType]?.[keyCombinationId];
+
+            if (!table) {
+                throw new Error(
+                    `No condition table found for ${conditionType} / ${keyCombinationId}`
+                );
+            }
+
+            return table;
+        },
         _mapFieldName: function (field) {
             const map = {
                 Sales_Organization: "SalesOrganization",
