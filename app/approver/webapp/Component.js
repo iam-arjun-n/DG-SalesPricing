@@ -595,6 +595,12 @@ sap.ui.define([
                         "Field_Customer",
                         "Column_Material"
                     ],
+                    SALE_CUST_MAT_ROLE: [
+                        "Field_Sales_Organization",
+                        "Field_Customer",
+                        "Column_Material",
+                        "Column_Partner_Role"
+                    ],
 
                     PB00_VEN_MAT: [
                         "Field_Supplier",
@@ -712,7 +718,8 @@ sap.ui.define([
                 Material: "Material",
                 Supplier: "Supplier",
                 Price_List_Type: "PriceListType",
-                Division: "Division"
+                Division: "Division",
+                Partner_Role: "PartnerRole"
             };
             return map[field];
         },
