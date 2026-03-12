@@ -610,15 +610,37 @@ sap.ui.define([
                     SALE_SOLD_MAT_CUST: [
                         "Field_Sales_Organization",
                         "Field_Sold_To_Party",
-                        "Column_Material"
+                        "Column_Material",
+                        "Column_Customer"
                     ],
 
                     SALE_DIST_MAT_CUST: [
                         "Field_Sales_Organization",
                         "Field_Distribution_Channel",
-                        "Column_Material",
+                        "Field_Material",
+                        "Field_Material_Price_Group",
                         "Column_Customer"
-                    ]
+                    ],
+
+                    PB00_PRICE_CUR_MAT: [
+                        "Field_Sales_Organization",
+                        "Field_Distribution_Channel",
+                        "Field_Price_List_Type",
+                        "Field_Document_Currency",
+                        "Column_Material"
+                    ],
+
+                    PB00_MAT: [
+                        "Field_Sales_Organization",
+                        "Field_Distribution_Channel",
+                        "Column_Material",
+                    ],
+
+                    PB00_SALE_DIST_MAT: [
+                        "Field_Sales_Organization",
+                        "Field_Distribution_Channel",
+                        "Column_Material_Group",
+                    ],
                 },
 
                 PR00: {
@@ -626,45 +648,58 @@ sap.ui.define([
                     PR00_CUST_MAT: [
                         "Field_Sales_Organization",
                         "Field_Distribution_Channel",
-                        "Field_Customer"
+                        "Field_Customer",
+                        "Column_Material",
                     ],
 
                     PR00_PRI_CUR_MAT: [
                         "Field_Sales_Organization",
                         "Field_Distribution_Channel",
                         "Field_Price_List_Type",
-                        "Field_Document_Currency"
+                        "Field_Document_Currency",
+                        "Column_Material",
                     ],
 
                     PR00_SAL_DIS_DIV_PLT_MAT: [
                         "Field_Sales_Organization",
                         "Field_Distribution_Channel",
-                        "Field_Division"
+                        "Field_Division",
+                        "Column_Plant",
+                        "Column_Material",
                     ],
 
                     PR00_MAT: [
                         "Field_Sales_Organization",
-                        "Field_Distribution_Channel"
+                        "Field_Distribution_Channel",
+                        "Column_Material",
                     ],
 
                     PR00_SAL_DIS_MAT_USA: [
                         "Field_Sales_Organization",
                         "Field_Distribution_Channel",
-                        "Field_Material"
+                        "Field_Material",
+                        "Column_Usage",
                     ],
 
-                    PR00_SAL_MAT_CUS_WBS: [],
+                    PR00_SAL_MAT_CUS_WBS: [
+                        "Column_Sales_Organization",
+                        "Column_Material",
+                        "Column_Customer",
+                        "Column_WBS",
+                    ],
 
                     PR00_CUS_WBS_PER: [
                         "Field_Customer",
-                        "Field_WBS"
+                        "Field_WBS",
+                        "Column_Personnel",
                     ],
 
                     PR00_SAL_DIS_CUS_MAT_ORD: [
                         "Field_Sales_Organization",
                         "Field_Distribution_Channel",
                         "Field_Customer",
-                        "Field_Material"
+                        "Field_Material",
+                        "Column_Order_Reason",
                     ]
                 }
             };
@@ -721,6 +756,31 @@ sap.ui.define([
                 Division: "Division",
                 Partner_Role: "PartnerRole"
             };
+            return map[field];
+        },
+        _mapFieldName: function (field) {
+            const map = {
+                Sales_Organization: "SalesOrganization",
+                Distribution_Channel: "DistributionChannel",
+                Division: "Division",
+                Customer: "Customer",
+                Sold_To_Party: "SoldToParty",
+                Supplier: "Supplier",
+                Material: "Material",
+                Material_Group: "MaterialGroup",
+                Material_Price_Group: "MaterialPricingGroup",
+                Price_List_Type: "PriceListType",
+                Plant: "Plant",
+                Usage: "MatUsageIndicator",
+                Partner_Role: "PartnerRole",
+                Personnel: "Personnel",
+                WBS: "WBSElementExternalID",
+                Order_Reason: "SDDocumentReason",
+                Country: "Country",
+                Region: "Region",
+                Postal_Code: "PostalCode",
+            };
+
             return map[field];
         },
 
